@@ -327,6 +327,89 @@ Record design choices that trade off simplicity vs capability.
 - PRs cannot merge with failing CI
 - Higher development discipline required
 
+## Foundation Implementation Decisions
+
+### Date: 2026-01-21
+**Decision**: FastAPI with SQLAlchemy 2.0 for backend foundation
+**Context**: Selecting the core backend technologies for implementation
+**Alternatives Considered**:
+- Django REST Framework with Django ORM
+- Flask with Peewee ORM
+- Node.js/Express with Prisma ORM
+- Go with standard library + custom ORM
+**Rationale**:
+- FastAPI provides excellent async performance and auto-generated OpenAPI docs
+- SQLAlchemy 2.0 offers modern async support and comprehensive SQL capabilities
+- Both have excellent TypeScript integration for full-stack type safety
+- Mature ecosystems with good testing and deployment support
+- Aligns with architectural decisions made in Phase 1
+**Consequences**:
+- Python 3.9+ requirement for modern syntax support
+- Async/await patterns throughout the codebase
+- Automatic API documentation generation
+- Strong typing from database to API to frontend
+- Learning curve for SQLAlchemy ORM patterns
+
+### Date: 2026-01-21
+**Decision**: React 18 + TypeScript + Vite for frontend foundation
+**Context**: Selecting the frontend technology stack
+**Alternatives Considered**:
+- Vue.js 3 + TypeScript + Vite
+- Svelte + TypeScript + Vite
+- SolidJS + TypeScript + Vite
+- Vanilla JavaScript with Web Components
+**Rationale**:
+- React ecosystem maturity and excellent TypeScript integration
+- Vite provides fast development experience and optimized builds
+- React 18 concurrent features support for better performance
+- Strong alignment with backend API patterns
+- Excellent accessibility and testing ecosystem
+**Consequences**:
+- Modern JavaScript/TypeScript development workflow
+- Component-based architecture with hooks
+- Tree-shaking and code splitting optimizations
+- Learning curve for React patterns and ecosystem
+- Bundle size considerations with React's footprint
+
+### Date: 2026-01-21
+**Decision**: Minimal dependency approach with explicit justification
+**Context**: Managing third-party dependencies for maintainability and security
+**Alternatives Considered**:
+- Full-featured frameworks (e.g., Django, Next.js)
+- Micro-framework approach with many small libraries
+- Monolithic custom implementation
+**Rationale**:
+- Each dependency must have clear value proposition
+- Reduces security surface area and maintenance burden
+- Easier to understand and debug codebase
+- Faster builds and smaller bundle sizes
+- Aligns with local-first, minimal complexity goals
+**Consequences**:
+- Some features implemented manually rather than using libraries
+- Higher development effort for infrastructure code
+- Potential for inconsistent implementations
+- Regular dependency audits and updates required
+
+### Date: 2026-01-21
+**Decision**: pytest for backend testing, Playwright for E2E testing
+**Context**: Selecting testing frameworks for comprehensive test coverage
+**Alternatives Considered**:
+- unittest (standard library) + Selenium
+- pytest + Cypress
+- Jest for both backend and frontend
+- Robot Framework for E2E testing
+**Rationale**:
+- pytest provides excellent async support and fixture system
+- Playwright offers modern browser automation with cross-platform support
+- Both integrate well with CI/CD pipelines
+- Strong TypeScript support for test authoring
+- Active communities with good documentation
+**Consequences**:
+- Python testing ecosystem with async considerations
+- Browser automation setup and maintenance
+- Test execution time and resource requirements
+- Learning curve for both testing frameworks
+
 ---
 
 Template for new decisions:

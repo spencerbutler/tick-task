@@ -72,6 +72,20 @@
 - **Touch Targets**: Minimum 44px size, adequate spacing
 - **Content Scaling**: 200% zoom without horizontal scroll
 
+#### API Contract Tests (100% endpoint coverage)
+**Scope**: API endpoints for contract compliance and error handling
+**Automation**: pytest with HTTP client testing
+**Runtime**: <5 seconds per endpoint
+**Location**: `tests/contract/`
+
+**Test Targets**:
+- **OpenAPI Spec**: Generated API spec matches implementation
+- **Request Validation**: All parameters validated correctly
+- **Response Schemas**: Responses match documented schemas
+- **Error Contracts**: Error responses follow documented format
+- **Status Codes**: Correct HTTP status codes for all scenarios
+- **Content Types**: Proper content-type headers and bodies
+
 ### What NOT to Test
 - **Third-party Libraries**: Assume frameworks work correctly (React, FastAPI, SQLite)
 - **Browser APIs**: Trust browser implementations (DOM, Fetch, LocalStorage)
