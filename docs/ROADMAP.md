@@ -168,6 +168,36 @@
 - Comprehensive testing prevents regressions
 - Documentation-first approach minimizes rework
 
+## Security Requirements & Validation
+
+### Hard Security Requirements
+**All development activities must implement security validation:**
+
+**1. Shell Command Validation**
+- **Pre-execution syntax checking** with `bash -n`
+- **Dangerous command pattern detection** (rm -rf /, dd commands, etc.)
+- **Metacharacter validation** with context-aware allowlists
+- **Timeout protection** against hanging commands
+
+**2. Content Security Validation**
+- **Zero-width character detection** (invisible Unicode injection)
+- **Control character blocking** (terminal manipulation codes)
+- **Right-to-left override prevention** (text direction attacks)
+- **Homoglyph attack detection** (look-alike character spoofing)
+- **Unicode normalization** and safe character validation
+
+**3. Implementation Requirements**
+- **SecurityValidator class** integrated into all command execution
+- **Content validation** for all user inputs and file operations
+- **Graceful failure** with clear error messages
+- **Logging** of security events for audit trails
+
+**4. Testing & Verification**
+- **Security test cases** for dangerous command patterns
+- **Unicode attack vector testing** with malicious characters
+- **False positive validation** against legitimate content
+- **Performance impact assessment** for validation overhead
+
 ## Development Practices & Templates
 
 ### Pull Request Templates
