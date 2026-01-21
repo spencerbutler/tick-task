@@ -2,6 +2,25 @@
 
 This project uses verbose, decision-oriented changelog entries.
 
+## v0.6.0 — Development Wrapper (2026-01-21)
+- **Development Tools**: Single-command development server wrapper for streamlined development
+- Dev script: `dev.py` handles both backend and frontend server startup with dependency checking
+- Process management: Graceful startup, monitoring, and shutdown of development servers
+- Dependency validation: Automatic checking and installation of Python/Node.js dependencies
+- Documentation: Comprehensive DEV_SETUP.md with setup instructions and troubleshooting
+
+## v0.5.0 — Phase 5 Complete (2026-01-21)
+- **Phase 5: Frontend Implementation** completed - React TypeScript application foundation
+- Project structure: Complete frontend directory structure with components, views, hooks, and utilities
+- Configuration: Vite build system, TypeScript strict configuration, Tailwind CSS with custom design system
+- API integration: React Query hooks for all CRUD operations with optimistic updates and error handling
+- TypeScript types: Comprehensive API type definitions matching backend schemas
+- Component architecture: Navigation component with routing, responsive design with dark mode support
+- Views implementation: Today view with real-time data loading, placeholder views for Inbox/Contexts/Tags
+- Styling system: Tailwind CSS with custom component classes and accessibility-focused design
+- Build system: Vite configuration with API proxy, code splitting, and production optimization
+- Testing setup: Vitest configuration with jsdom environment and test utilities
+
 ## v0.4.0 — Phase 4 Complete (2026-01-21)
 - **Phase 4: Backend Implementation** completed - functional FastAPI backend
 - Database models: SQLAlchemy Task model with all required fields and constraints
