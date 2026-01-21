@@ -253,6 +253,80 @@ Record design choices that trade off simplicity vs capability.
 - No background update processes
 - Simpler deployment pipeline
 
+## Quality Assurance Decisions
+
+### Date: 2026-01-21
+**Decision**: Implement comprehensive pre-commit quality gates with <30 second timeout
+**Context**: Preventing code quality regressions during development
+**Alternatives Considered**:
+- No pre-commit hooks (CI only)
+- Minimal pre-commit checks (formatting only)
+- Longer timeout (60+ seconds)
+**Rationale**:
+- Catches issues immediately during development
+- 30 seconds is acceptable for developer productivity
+- Balances quality assurance with development speed
+- Prevents broken commits that block CI
+**Consequences**:
+- Developers must configure pre-commit tools locally
+- Fast feedback loop for code quality issues
+- Consistent code formatting across all contributors
+- Some development friction but better long-term quality
+
+### Date: 2026-01-21
+**Decision**: Require CI pipeline with <10 minute timeout for all PRs to main
+**Context**: Ensuring production-ready code quality before merge
+**Alternatives Considered**:
+- No CI requirements (manual review only)
+- CI on feature branches only
+- Shorter timeout (5 minutes) with reduced test coverage
+**Rationale**:
+- Comprehensive testing prevents production issues
+- 10 minutes is reasonable for thorough validation
+- Cross-platform testing ensures compatibility
+- Required for professional software development
+**Consequences**:
+- Slower PR merge process
+- Higher confidence in main branch quality
+- Requires CI infrastructure and maintenance
+- May require test optimization for performance
+
+### Date: 2026-01-21
+**Decision**: Use pre-commit for local quality gates, CI for comprehensive validation
+**Context**: Balancing development speed with quality assurance
+**Alternatives Considered**:
+- All checks in CI only
+- All checks pre-commit only
+- Selective pre-commit checks based on file types
+**Rationale**:
+- Pre-commit provides immediate feedback
+- CI provides comprehensive cross-platform validation
+- Fast pre-commit checks don't block development flow
+- CI failures block merges but don't slow local development
+**Consequences**:
+- Two-tier quality assurance system
+- Different check sets for different contexts
+- Clear separation of local vs remote validation
+- Requires coordination between pre-commit and CI configurations
+
+### Date: 2026-01-21
+**Decision**: Block commits on pre-commit failures, require CI for PR merge
+**Context**: Enforcing quality standards at different stages
+**Alternatives Considered**:
+- Warning-only pre-commit hooks
+- Optional CI checks for PR merge
+- All quality checks as warnings only
+**Rationale**:
+- Pre-commit failures prevent bad commits entirely
+- CI requirements ensure comprehensive validation
+- Clear failure modes prevent confusion
+- Professional development standards
+**Consequences**:
+- Zero tolerance for code quality issues
+- Developers must resolve issues before committing
+- PRs cannot merge with failing CI
+- Higher development discipline required
+
 ---
 
 Template for new decisions:
