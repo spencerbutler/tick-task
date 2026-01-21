@@ -1,4 +1,4 @@
-import { useTasks } from '../hooks/useTasks';
+import { useTasks, useUpdateTask } from '../hooks/useTasks';
 
 interface TodayViewProps {
   onAddTask: () => void;
@@ -17,6 +17,14 @@ export function TodayView({ onAddTask }: TodayViewProps) {
     sort: 'due_at',
     order: 'asc',
   });
+
+  const updateTaskMutation = useUpdateTask();
+
+  const handleTaskStatusChange = (taskId: string, currentStatus: string) => {
+    // Toggle between 'todo' and 'done'
+    const newStatus = currentStatus === 'done' ? 'todo' : 'done';
+    updateTaskMutation.mutate({ id: taskId, task: { status: newStatus } });
+  };
 
   if (isLoading) {
     return (
@@ -98,9 +106,10 @@ export function TodayView({ onAddTask }: TodayViewProps) {
               <div className="flex items-start space-x-3">
                 <input
                   type="checkbox"
-                  className="mt-1 h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                  className="mt-1 h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded cursor-pointer"
                   checked={task.status === 'done'}
-                  readOnly
+                  onChange={() => handleTaskStatusChange(task.id, task.status)}
+                  disabled={updateTaskMutation.isPending}
                 />
                 <div className="flex-1 min-w-0">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white truncate">
