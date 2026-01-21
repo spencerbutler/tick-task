@@ -120,7 +120,7 @@ class DevServer:
 
             # Check if process is still running
             if self.backend_process.poll() is None:
-                print("✅ Backend server started on http://127.0.0.1:8000")
+                print("✅ Backend server started on http://127.0.0.1:7000")
                 return True
             else:
                 stdout, stderr = self.backend_process.communicate()
@@ -176,8 +176,8 @@ class DevServer:
         try:
             print("\n🎯 Both servers are running!")
             print("📱 Frontend: http://localhost:5173")
-            print("🔧 Backend API: http://127.0.0.1:8000/api/v1/")
-            print("📚 API Docs: http://127.0.0.1:8000/docs")
+            print("🔧 Backend API: http://127.0.0.1:7000/api/v1/")
+            print("📚 API Docs: http://127.0.0.1:7000/docs")
             print("\nPress Ctrl+C to stop all servers...\n")
 
             while True:

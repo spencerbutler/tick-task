@@ -18,8 +18,8 @@ This will:
 ## What You'll Get
 
 - **Frontend**: http://localhost:5173 (React + TypeScript + Vite)
-- **Backend API**: http://127.0.0.1:8000/api/v1/ (FastAPI)
-- **API Documentation**: http://127.0.0.1:8000/docs (Swagger UI)
+- **Backend API**: http://127.0.0.1:7000/api/v1/ (FastAPI)
+- **API Documentation**: http://127.0.0.1:7000/docs (Swagger UI)
 
 ## Alternative Commands
 
@@ -93,7 +93,7 @@ mypy .
 
 ### Backend Won't Start
 - Ensure Python dependencies are installed: `pip install -e .`
-- Check if port 8000 is available
+- Check if port 7000 is available
 - Verify PYTHONPATH includes `src/` directory
 
 ### Frontend Won't Start
