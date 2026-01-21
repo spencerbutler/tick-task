@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import select
+from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from fin_tasks.config import settings
@@ -207,7 +207,7 @@ async def delete_task(
 )
 async def list_tasks(
     # Filtering parameters
-    status: Optional[str] = Query(None, description="Filter by status"),
+    status: Optional[list[str]] = Query(None, description="Filter by status (can specify multiple)"),
     context: Optional[str] = Query(None, description="Filter by context"),
     tags: Optional[str] = Query(None, description="Filter by tags (comma-separated)"),
     priority: Optional[str] = Query(None, description="Minimum priority level"),
@@ -231,7 +231,7 @@ async def list_tasks(
 
     # Apply filters
     if status:
-        query = query.where(Task.status == status)
+        query = query.where(Task.status.in_(status))
 
     if context:
         query = query.where(Task.context == context)

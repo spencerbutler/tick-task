@@ -27,7 +27,13 @@ const api = {
 
     Object.entries(query).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== '') {
-        params.append(key, String(value));
+        // Handle status array by adding multiple parameters
+        if (key === 'status' && typeof value === 'string') {
+          const statuses = value.split(',').map(s => s.trim()).filter(s => s);
+          statuses.forEach(status => params.append('status', status));
+        } else {
+          params.append(key, String(value));
+        }
       }
     });
 
