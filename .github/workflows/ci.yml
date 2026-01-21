@@ -40,7 +40,6 @@ jobs:
 
     - name: Run database migrations
       run: |
-        cd src
         python -m alembic upgrade head
 
     - name: Run backend tests
