@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTasks, useUpdateTask } from '../hooks/useTasks';
 
 interface TodayViewProps {
@@ -20,10 +21,46 @@ export function TodayView({ onAddTask }: TodayViewProps) {
 
   const updateTaskMutation = useUpdateTask();
 
+  // Editing state
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({ title: '', description: '' });
+
   const handleTaskStatusChange = (taskId: string, currentStatus: string) => {
     // Toggle between 'todo' and 'done'
     const newStatus = currentStatus === 'done' ? 'todo' : 'done';
     updateTaskMutation.mutate({ id: taskId, task: { status: newStatus } });
+  };
+
+  const startEditing = (task: any) => {
+    setEditingTaskId(task.id);
+    setEditForm({ title: task.title, description: task.description || '' });
+  };
+
+  const cancelEditing = () => {
+    setEditingTaskId(null);
+    setEditForm({ title: '', description: '' });
+  };
+
+  const saveEditing = () => {
+    if (editingTaskId && editForm.title.trim()) {
+      updateTaskMutation.mutate({
+        id: editingTaskId,
+        task: {
+          title: editForm.title.trim(),
+          description: editForm.description.trim() || undefined
+        }
+      });
+      cancelEditing();
+    }
+  };
+
+  const handleEditKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      saveEditing();
+    } else if (e.key === 'Escape') {
+      cancelEditing();
+    }
   };
 
   if (isLoading) {
@@ -101,7 +138,7 @@ export function TodayView({ onAddTask }: TodayViewProps) {
           {tasks.map((task) => (
             <div
               key={task.id}
-              className="card hover:shadow-md transition-shadow cursor-pointer"
+              className="card hover:shadow-md transition-shadow"
             >
               <div className="flex items-start space-x-3">
                 <input
@@ -112,37 +149,91 @@ export function TodayView({ onAddTask }: TodayViewProps) {
                   disabled={updateTaskMutation.isPending}
                 />
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-white truncate">
-                    {task.title}
-                  </h3>
-                  {task.description && (
-                    <p className="text-gray-600 dark:text-gray-400 text-sm mt-1 line-clamp-2">
-                      {task.description}
-                    </p>
-                  )}
-                  <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      task.priority === 'urgent' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
-                      task.priority === 'high' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' :
-                      task.priority === 'medium' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-                      'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
-                    }`}>
-                      {task.priority}
-                    </span>
-                    <span>{task.context}</span>
-                    {task.tags.length > 0 && (
-                      <div className="flex space-x-1">
-                        {task.tags.slice(0, 3).map((tag) => (
-                          <span key={tag} className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-xs">
-                            #{tag}
-                          </span>
-                        ))}
-                        {task.tags.length > 3 && (
-                          <span className="text-xs">+{task.tags.length - 3} more</span>
+                  {editingTaskId === task.id ? (
+                    // Edit mode
+                    <div className="space-y-3">
+                      <input
+                        type="text"
+                        value={editForm.title}
+                        onChange={(e) => setEditForm(prev => ({ ...prev, title: e.target.value }))}
+                        onKeyDown={handleEditKeyPress}
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                        placeholder="Task title"
+                        autoFocus
+                      />
+                      <textarea
+                        value={editForm.description}
+                        onChange={(e) => setEditForm(prev => ({ ...prev, description: e.target.value }))}
+                        onKeyDown={handleEditKeyPress}
+                        rows={2}
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                        placeholder="Task description (optional)"
+                      />
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={saveEditing}
+                          disabled={!editForm.title.trim() || updateTaskMutation.isPending}
+                          className="px-3 py-1 bg-primary-600 text-white text-sm rounded-md hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={cancelEditing}
+                          className="px-3 py-1 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-md hover:bg-gray-400 dark:hover:bg-gray-500"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    // Display mode
+                    <>
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-lg font-medium text-gray-900 dark:text-white truncate">
+                            {task.title}
+                          </h3>
+                          {task.description && (
+                            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1 line-clamp-2">
+                              {task.description}
+                            </p>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => startEditing(task)}
+                          className="ml-2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded"
+                          title="Edit task"
+                        >
+                          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </button>
+                      </div>
+                      <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500 dark:text-gray-400">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          task.priority === 'urgent' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
+                          task.priority === 'high' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' :
+                          task.priority === 'medium' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
+                          'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+                        }`}>
+                          {task.priority}
+                        </span>
+                        <span>{task.context}</span>
+                        {task.tags.length > 0 && (
+                          <div className="flex space-x-1">
+                            {task.tags.slice(0, 3).map((tag) => (
+                              <span key={tag} className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-xs">
+                                #{tag}
+                              </span>
+                            ))}
+                            {task.tags.length > 3 && (
+                              <span className="text-xs">+{task.tags.length - 3} more</span>
+                            )}
+                          </div>
                         )}
                       </div>
-                    )}
-                  </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
