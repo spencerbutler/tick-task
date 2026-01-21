@@ -1,14 +1,138 @@
-# Operations (v0)
+# Operations (v1.0)
 
-## Run modes
-- Dev
-- Local production (single machine)
-- Optional LAN (explicit)
+## Development Workflow
+
+### Branch Strategy
+- **main**: Production-ready code, protected branch
+- **feature/phase-X-***: Feature branches for each development phase
+- **No direct commits to main**: All changes via PR review
+
+### Pre-commit Quality Gates
+**Trigger**: Before each commit on feature branches
+**Timeout**: <30 seconds (blocks commit if exceeded)
+**Failure Behavior**: Commit blocked with clear error messages
+
+**Local Checks**:
+- **Code Formatting**: Black (Python), Prettier (JavaScript/TypeScript)
+- **Import Sorting**: isort (Python), eslint import/sort (JavaScript)
+- **Linting**: flake8 (Python), eslint (JavaScript/TypeScript)
+- **Type Checking**: mypy (Python), tsc (TypeScript)
+- **Fast Unit Tests**: Critical path unit tests (<5 seconds)
+
+### CI Pipeline
+**Trigger**: Push to feature branches, all PRs targeting main
+**Platforms**: Ubuntu (primary), Windows/macOS (validation)
+**Timeout**: <10 minutes total (fails build if exceeded)
+**Required Status**: Must pass before PR merge
+
+**CI Stages**:
+1. **Lint & Type Check** (<1 minute): All static analysis
+2. **Unit Tests** (<2 minutes): Full unit test suite with coverage
+3. **Integration Tests** (<3 minutes): API + database tests
+4. **E2E Tests** (<3 minutes): Full browser automation
+5. **Accessibility Audit** (<1 minute): WCAG compliance check
+6. **Performance Budget** (<30 seconds): Response time validation
+
+### Branch Protection Rules
+- **main branch**: Requires PR, all CI checks pass, approved review
+- **Feature branches**: Pre-commit gates only (no CI requirement)
+- **PR Requirements**: Title includes model disclosure `[model: ...]`, description links to issues
+
+## Run Modes
+
+### Development Mode
+- Hot reload enabled for both backend and frontend
+- Debug logging and error pages
+- CORS enabled for localhost development
+- Test database with sample data
+
+### Local Production (Single Machine)
+- Optimized builds (minified, tree-shaken)
+- Production logging and error handling
+- SQLite database in user data directory
+- Automatic startup on system boot (optional)
+
+### LAN Mode (Explicit Opt-in)
+- Requires explicit configuration change
+- Binds to 0.0.0.0 with token authentication
+- Cryptographically secure tokens generated per enable
+- Network access logged for security
 
 ## Configuration
-- Port
-- Data path
-- LAN enable + token (if enabled)
+
+### Required Settings
+- **Port**: Default 8000, configurable 1024-65535
+- **Data Path**: Default `~/.fin-tasks/`, configurable absolute path
+- **LAN Mode**: Default disabled, explicit enable required
+
+### Optional Settings
+- **Theme**: light/dark/auto (follows system preference)
+- **Keyboard Shortcuts**: Enable/disable custom shortcuts
+- **Export Path**: Default downloads folder, configurable
+- **Log Level**: info/warn/error/debug
+
+### Configuration Storage
+- **Format**: JSON file in data directory
+- **Validation**: Schema-validated on startup
+- **Hot Reload**: Changes applied without restart (where possible)
+- **Backup**: Configuration included in data exports
+
+## Deployment & Distribution
+
+### Packaging Strategy
+- **PyInstaller**: Cross-platform executable generation
+- **Single Binary**: No external Python installation required
+- **Platform Targets**: Windows (exe), macOS (app), Linux (AppImage)
+- **Size Target**: <50MB compressed
+
+### Distribution Channels
+- **GitHub Releases**: Primary distribution mechanism
+- **Manual Updates**: Users download new versions manually
+- **Version Checking**: Optional version check (no auto-update)
+- **Installation**: Drag-and-drop or simple installer
+
+### Data Management
+- **User Data Directory**: Platform-specific locations
+  - Linux: `~/.fin-tasks/`
+  - macOS: `~/Library/Application Support/FIN-tasks/`
+  - Windows: `%APPDATA%\FIN-tasks\`
+- **Database**: SQLite file with WAL mode enabled
+- **Configuration**: JSON file with schema validation
+- **Logs**: Rotating log files with configurable retention
+
+## Monitoring & Troubleshooting
+
+### Logging Strategy
+- **Development**: Debug level, console output, full stack traces
+- **Production**: Info level, file output, user-friendly messages
+- **LAN Mode**: Security events logged with timestamps
+- **Performance**: Key metrics logged (startup time, query performance)
+
+### Health Checks
+- **API Endpoint**: `GET /health` returns system status
+- **Database**: Connection and integrity checks
+- **Disk Space**: Available space monitoring
+- **Memory**: Usage tracking against 200MB budget
+
+### Error Handling
+- **User-Friendly**: Clear error messages, recovery suggestions
+- **Logging**: Full technical details for debugging
+- **Graceful Degradation**: Core functionality preserved during errors
+- **Recovery**: Automatic retry for transient failures
+
+## Security Operations
+
+### Access Control
+- **Local Mode**: Implicit trust (localhost only)
+- **LAN Mode**: Token-based authentication required
+- **Token Security**: Cryptographically secure, time-limited
+- **Audit Logging**: Access attempts logged in LAN mode
+
+### Data Protection
+- **Encryption**: Optional database encryption (future feature)
+- **Backup Security**: Exports contain no sensitive configuration
+- **Input Validation**: All inputs sanitized and validated
+- **Error Leakage**: No sensitive information in error messages
 
 ---
 
@@ -48,4 +172,3 @@ This policy exists to ensure:
 - editor agnosticism
 - zero prompt drift
 - deterministic repo behavior across humans and agents
-

@@ -245,9 +245,15 @@ A beautiful, reliable task management tool that works offline-first, ensuring us
 
 **Acceptance Criteria**:
 - [ ] UI loads and functions without JavaScript errors
-- [ ] All core workflows work end-to-end
-- [ ] Interface is usable on desktop browsers (Chrome, Firefox, Safari)
-- [ ] Keyboard navigation works for all interactive elements
+- [ ] All core workflows work end-to-end (task creation, editing, completion, filtering)
+- [ ] Four required views implemented: Today, Inbox, Contexts, Tags
+- [ ] Interface is usable on desktop browsers (Chrome, Firefox, Safari) at 1024px+
+- [ ] Keyboard navigation works for all interactive elements (Tab order, shortcuts)
+- [ ] Dark/light mode support with system preference detection
+- [ ] Responsive design with touch-friendly targets (44px minimum)
+- [ ] Task creation supports smart parsing syntax (#tag @context !priority)
+- [ ] Real-time filtering and search functionality
+- [ ] Loading states and error boundaries implemented
 
 #### Accessibility Compliance (SHOULD-ACCESS-001)
 **Requirement**: UI meets WCAG 2.1 AA accessibility standards.
@@ -276,10 +282,16 @@ A beautiful, reliable task management tool that works offline-first, ensuring us
 **Accessibility Tests**: Automated WCAG compliance
 
 **Acceptance Criteria**:
-- [ ] All acceptance criteria have corresponding tests
+- [ ] Unit tests: ≥80% statement, ≥90% branch coverage
+- [ ] Integration tests: ≥90% API endpoint coverage
+- [ ] E2E tests: ≥95% user workflow coverage
+- [ ] Accessibility tests: 100% WCAG 2.1 AA compliance
+- [ ] Overall: ≥95% acceptance criteria test coverage
 - [ ] Test suite runs in <5 minutes locally
-- [ ] Tests pass on all supported platforms
+- [ ] Tests pass on all supported platforms (Ubuntu primary, Windows/macOS validation)
 - [ ] Coverage reports generated and tracked
+- [ ] Pre-commit hooks block commits on failures (<30 seconds)
+- [ ] CI pipeline passes all stages before merge (<10 minutes)
 
 #### Pre-commit Quality Gates (SHOULD-CI-001)
 **Requirement**: Automated quality checks prevent regressions.
