@@ -168,6 +168,168 @@
 - Comprehensive testing prevents regressions
 - Documentation-first approach minimizes rework
 
+## Security Requirements & Validation
+
+### Hard Security Requirements
+**All development activities must implement security validation:**
+
+**1. Shell Command Validation**
+- **Pre-execution syntax checking** with `bash -n`
+- **Dangerous command pattern detection** (rm -rf /, dd commands, etc.)
+- **Metacharacter validation** with context-aware allowlists
+- **Timeout protection** against hanging commands
+
+**2. Content Security Validation**
+- **Zero-width character detection** (invisible Unicode injection)
+- **Control character blocking** (terminal manipulation codes)
+- **Right-to-left override prevention** (text direction attacks)
+- **Homoglyph attack detection** (look-alike character spoofing)
+- **Unicode normalization** and safe character validation
+
+**3. Implementation Requirements**
+- **SecurityValidator class** integrated into all command execution
+- **Content validation** for all user inputs and file operations
+- **Graceful failure** with clear error messages
+- **Logging** of security events for audit trails
+
+**4. Testing & Verification**
+- **Security test cases** for dangerous command patterns
+- **Unicode attack vector testing** with malicious characters
+- **False positive validation** against legitimate content
+- **Performance impact assessment** for validation overhead
+
+## Development Practices & Templates
+
+### Pull Request Templates
+**Use templates for complex PRs to avoid CLI parsing issues:**
+
+**For simple PRs:**
+```bash
+gh pr create --title "feat: Add new feature" --body "Brief description of changes"
+```
+
+**For complex PRs with code blocks:**
+```bash
+# Create template file
+cat > pr_template.md << 'EOF'
+## Changes Made
+- Added new feature X
+- Fixed bug in component Y
+
+## Technical Details
+```python
+# Code examples here
+def new_function():
+    return "example"
+```
+
+## Testing
+- Unit tests added
+- Integration tests pass
+EOF
+
+# Create PR
+gh pr create --title "feat: Complex feature implementation" --body-file pr_template.md
+```
+
+**Best Practices:**
+- Use `--body-file` for PRs with code blocks, backticks, or complex formatting
+- Keep PR descriptions focused and actionable
+- Include testing verification in PR descriptions
+- Reference related issues or PRs
+
+### Git Workflow Standards
+**Branch Naming:**
+- Features: `feature/feature-name`
+- Phases: `feature/phase-X-description`
+- Bug fixes: `fix/issue-description`
+- Hotfixes: `hotfix/critical-issue`
+
+**Commit Messages:**
+```bash
+# Good examples
+feat: Add inline task editing with keyboard shortcuts
+fix: Resolve CI/CD pipeline dependency installation
+docs: Update testing strategy with coverage targets
+
+# Structure: type: description
+# Types: feat, fix, docs, style, refactor, test, chore
+```
+
+**Clean History:**
+- Use `git merge --squash` for feature branches
+- Force push with `--force-with-lease` for clean history
+- Maintain linear history where possible
+- Squash commits before merging to main
+
+### CI/CD Maintenance
+**Monitoring:**
+- Check GitHub Actions tab for pipeline failures
+- Monitor test coverage trends
+- Review security scan results weekly
+- Update dependencies monthly
+
+**Common Fixes:**
+- Update `pyproject.toml` hash in cache keys when dependencies change
+- Fix test flags: Vitest uses `--run`, not `--watchAll=false`
+- Remove problematic dependencies from pre-commit hooks
+- Update Docker base images regularly
+
+**Quality Gates:**
+- All tests must pass
+- Coverage ≥90% backend, ≥80% frontend
+- Security scans clean
+- Pre-commit hooks pass
+- Docker build successful
+
+### Code Review Guidelines
+**Review Checklist:**
+- [ ] CI pipeline passes all jobs
+- [ ] Test coverage maintained or improved
+- [ ] Breaking changes documented
+- [ ] Database migrations included if needed
+- [ ] Documentation updated
+- [ ] Security implications reviewed
+
+**Approval Requirements:**
+- 1 reviewer required for feature branches
+- 2 reviewers required for main branch merges
+- Code owner approval for architectural changes
+- QA approval for UI/UX changes
+
+### Documentation Standards
+**Update Requirements:**
+- Roadmap updated with phase completion status
+- API documentation synchronized with code
+- Changelog maintained with feature/fix entries
+- Breaking changes clearly documented
+
+**Review Process:**
+- Technical docs reviewed by team
+- User-facing docs tested for clarity
+- API docs validated against implementation
+
+### Development Environment
+**Setup Verification:**
+```bash
+# Verify all tools installed
+python --version        # 3.11+
+node --version         # 18+
+npm --version          # 9+
+pip --version          # 23+
+
+# Test development workflow
+./dev.py               # Should start both servers
+npm run test          # Frontend tests pass
+python test_api.py    # API tests pass
+```
+
+**Common Issues:**
+- Clear node_modules and reinstall if frontend issues
+- Run `alembic upgrade head` if database schema issues
+- Check `.env` files for configuration problems
+- Verify port availability (7000 backend, 5173 frontend)
+
 ## Project Invariants
 - Local-first deployment with zero external dependencies
 - SQLite for data persistence
@@ -175,3 +337,4 @@
 - React/TypeScript for frontend UI
 - Comprehensive testing (unit, integration, E2E)
 - GitHub-first development workflow
+- Template-based PR creation for complex changes
