@@ -1,13 +1,30 @@
-import { useTasks } from '../hooks/useTasks';
+import { useTasks, useUpdateTask } from '../hooks/useTasks';
 
-export function TodayView() {
+interface TodayViewProps {
+  onAddTask: () => void;
+}
+
+export function TodayView({ onAddTask }: TodayViewProps) {
+  // Create date range for today
+  const today = new Date();
+  const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
+
   const { data: tasksData, isLoading, error } = useTasks({
     status: 'todo,doing,blocked',
-    due_before: new Date().toISOString().split('T')[0] + 'T23:59:59Z',
-    due_after: new Date().toISOString().split('T')[0] + 'T00:00:00Z',
+    due_before: endOfDay.toISOString(),
+    due_after: startOfDay.toISOString(),
     sort: 'due_at',
     order: 'asc',
   });
+
+  const updateTaskMutation = useUpdateTask();
+
+  const handleTaskStatusChange = (taskId: string, currentStatus: string) => {
+    // Toggle between 'todo' and 'done'
+    const newStatus = currentStatus === 'done' ? 'todo' : 'done';
+    updateTaskMutation.mutate({ id: taskId, task: { status: newStatus } });
+  };
 
   if (isLoading) {
     return (
@@ -55,10 +72,7 @@ export function TodayView() {
         <button
           type="button"
           className="btn btn-primary"
-          onClick={() => {
-            // TODO: Open task creation modal
-            console.log('Add new task');
-          }}
+          onClick={onAddTask}
           title="Add New Task"
         >
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -92,9 +106,10 @@ export function TodayView() {
               <div className="flex items-start space-x-3">
                 <input
                   type="checkbox"
-                  className="mt-1 h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                  className="mt-1 h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded cursor-pointer"
                   checked={task.status === 'done'}
-                  readOnly
+                  onChange={() => handleTaskStatusChange(task.id, task.status)}
+                  disabled={updateTaskMutation.isPending}
                 />
                 <div className="flex-1 min-w-0">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white truncate">
