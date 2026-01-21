@@ -6,7 +6,7 @@ import {
   TaskList,
   TaskQuery,
   ApiError
-} from '@/types/api';
+} from '../types/api';
 
 // API base URL
 const API_BASE = '/api/v1';

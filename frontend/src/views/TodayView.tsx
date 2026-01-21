@@ -5,10 +5,15 @@ interface TodayViewProps {
 }
 
 export function TodayView({ onAddTask }: TodayViewProps) {
+  // Create date range for today
+  const today = new Date();
+  const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
+
   const { data: tasksData, isLoading, error } = useTasks({
     status: 'todo,doing,blocked',
-    due_before: new Date().toISOString().split('T')[0] + 'T23:59:59Z',
-    due_after: new Date().toISOString().split('T')[0] + 'T00:00:00Z',
+    due_before: endOfDay.toISOString(),
+    due_after: startOfDay.toISOString(),
     sort: 'due_at',
     order: 'asc',
   });
