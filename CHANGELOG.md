@@ -2,6 +2,30 @@
 
 This project uses verbose, decision-oriented changelog entries.
 
+## v0.5.0 — Phase 5 Complete (2026-01-21)
+- **Phase 5: Frontend Implementation** completed - React TypeScript application foundation
+- Project structure: Complete frontend directory structure with components, views, hooks, and utilities
+- Configuration: Vite build system, TypeScript strict configuration, Tailwind CSS with custom design system
+- API integration: React Query hooks for all CRUD operations with optimistic updates and error handling
+- TypeScript types: Comprehensive API type definitions matching backend schemas
+- Component architecture: Navigation component with routing, responsive design with dark mode support
+- Views implementation: Today view with real-time data loading, placeholder views for Inbox/Contexts/Tags
+- Styling system: Tailwind CSS with custom component classes and accessibility-focused design
+- Build system: Vite configuration with API proxy, code splitting, and production optimization
+- Testing setup: Vitest configuration with jsdom environment and test utilities
+
+## v0.4.0 — Phase 4 Complete (2026-01-21)
+- **Phase 4: Backend Implementation** completed - functional FastAPI backend
+- Database models: SQLAlchemy Task entity with all required fields and constraints
+- Database migrations: Alembic migration system with initial tasks table schema
+- API schemas: Pydantic models for request/response validation with comprehensive field validation
+- FastAPI application: Complete API server with CORS, error handling, and OpenAPI documentation
+- CRUD endpoints: Full task management API (create, read, update, delete, list) with proper HTTP status codes
+- Database layer: Async SQLAlchemy session management with proper connection handling and cleanup
+- Configuration system: Pydantic settings with environment variable support and data directory management
+- Project structure: Proper Python package layout with src/ directory and comprehensive pyproject.toml
+- Dependencies: Complete pyproject.toml with development and production dependencies
+
 ## v0.3.0 — Phase 3 Complete (2026-01-21)
 - **Phase 3: Foundation Planning** completed - detailed implementation plans
 - Backend architecture: FastAPI + SQLAlchemy implementation strategy
