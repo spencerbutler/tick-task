@@ -2,14 +2,26 @@
 
 This project uses verbose, decision-oriented changelog entries.
 
+## v0.4.0 — Phase 4 Complete (2026-01-21)
+- **Phase 4: Backend Implementation** completed - functional FastAPI backend
+- Database models: SQLAlchemy Task model with all required fields and constraints
+- Database migrations: Alembic migration system with initial tasks table schema
+- API schemas: Pydantic models for request/response validation with comprehensive field validation
+- FastAPI application: Complete API server with CORS, error handling, and OpenAPI docs
+- CRUD endpoints: Full task management API (create, read, update, delete, list)
+- Database layer: Async SQLAlchemy session management with proper connection handling
+- Configuration system: Pydantic settings with environment variable support
+- Project structure: Proper Python package layout with src/ directory
+- Dependencies: Complete pyproject.toml with development and production dependencies
+
 ## v0.3.0 — Phase 3 Complete (2026-01-21)
 - **Phase 3: Foundation Planning** completed - detailed implementation plans
 - Backend architecture: FastAPI + SQLAlchemy implementation strategy
 - Frontend architecture: React + TypeScript + Vite component design
-- API implementation: Request/response flow, validation, and error handling
+- API implementation: Request/response flow, validation, error handling
 - Testing infrastructure: Unit, integration, E2E, and accessibility test plans
 - Security hardening: Threat model, network security, and operational security
-- Release preparation: Versioning, migrations, backups, and changelog discipline
+- Release preparation: Versioning, migrations, backups, changelog discipline
 - Implementation roadmap updated with Phase 4-7 execution plans
 
 ## v0.2.0 — Phase 2 Complete (2026-01-21)
