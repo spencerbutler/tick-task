@@ -1,233 +1,246 @@
-# Testing Strategy (v1.0)
+# Testing Strategy
 
-## Test Pyramid & Coverage Expectations
+## Overview
 
-### Test Categories & Coverage Targets
+This document outlines the comprehensive testing strategy for the FIN-tasks application, covering unit tests, integration tests, end-to-end tests, and quality assurance processes.
 
-#### Unit Tests (≥80% statement coverage, ≥90% branch coverage)
-**Scope**: Individual functions, classes, and modules in isolation
-**Mocking**: External dependencies (database, filesystem, network)
-**Runtime**: <100ms per test, <30 seconds total suite
-**Location**: `src/` modules with `tests/unit/`
+## Testing Pyramid
 
-**Test Targets**:
-- **Data Models**: Task entity validation, field constraints, serialization
-- **Business Logic**: Status transitions, priority ordering, filtering logic
-- **Utilities**: Date parsing, tag normalization, export formatting
-- **Validation**: Input sanitization, schema enforcement, error handling
-- **Query Building**: Filter construction, sort parameter validation
-
-**Examples**:
-- Task creation with invalid titles (empty, too long, whitespace-only)
-- Priority enum validation and ordering comparisons
-- Tag deduplication and normalization logic
-- ISO datetime parsing and timezone handling
-
-#### Integration Tests (≥90% API endpoint coverage)
-**Scope**: Component interactions, API endpoints with real database
-**Mocking**: External services only (no database mocking)
-**Runtime**: <200ms per test, <2 minutes total suite
-**Location**: `tests/integration/`
-
-**Test Targets**:
-- **API Endpoints**: CRUD operations with realistic data
-- **Database Layer**: SQLite transactions, migrations, concurrent access
-- **Data Flow**: Create → Read → Update → Delete cycles
-- **Error Handling**: Database constraints, invalid inputs, edge cases
-
-**Examples**:
-- Full task lifecycle (create → update → complete → archive)
-- Complex filtering (multiple criteria, sorting combinations)
-- Export functionality with various data sizes
-- Database integrity after crash simulation
-
-#### End-to-End Tests (≥95% user workflow coverage)
-**Scope**: Complete user journeys through the web interface
-**Mocking**: None - full stack testing
-**Runtime**: <5 seconds per test, <3 minutes total suite
-**Location**: `tests/e2e/`
-
-**Test Targets**:
-- **Core Workflows**: Task creation, editing, completion, organization
-- **View Navigation**: Switching between Today, Inbox, Contexts, Tags
-- **Data Persistence**: Changes survive page refreshes
-- **Error Recovery**: Network failures, invalid inputs, edge cases
-
-**Examples**:
-- Create task via quick-add → edit in modal → complete via keyboard shortcut
-- Filter tasks by multiple criteria → sort results → export to CSV
-- Navigate between views → verify task counts and ordering
-- Simulate offline → verify local storage and sync on reconnect
-
-#### Accessibility Tests (100% WCAG 2.1 AA compliance)
-**Scope**: UI components and pages for accessibility violations
-**Automation**: axe-core integration with test runners
-**Runtime**: <10 seconds per page/component
-**Location**: `tests/accessibility/`
-
-**Test Targets**:
-- **Color Contrast**: Text/background ratios meet WCAG AA standards
-- **Keyboard Navigation**: Tab order, focus management, shortcuts
-- **Screen Reader**: ARIA labels, semantic HTML, live regions
-- **Touch Targets**: Minimum 44px size, adequate spacing
-- **Content Scaling**: 200% zoom without horizontal scroll
-
-### What NOT to Test
-- **Third-party Libraries**: Assume frameworks work correctly (React, FastAPI, SQLite)
-- **Browser APIs**: Trust browser implementations (DOM, Fetch, LocalStorage)
-- **Operating System**: File permissions, network stack, process management
-- **Performance Micro-optimizations**: Focus on architectural performance budgets
-- **Visual Design Details**: Colors, spacing, typography (manual QA covers this)
-
-## Test Data Strategy
-
-### Test Data Patterns
-- **Factory Functions**: Consistent object creation with overrides
-- **Fixtures**: Predefined datasets for common scenarios
-- **Builders**: Fluent interfaces for complex object construction
-- **Constants**: Well-known values for assertions and comparisons
-
-### Data Categories
-- **Valid Data**: Normal use cases, edge cases within bounds
-- **Invalid Data**: Constraint violations, malformed inputs
-- **Edge Cases**: Empty collections, maximum field lengths, special characters
-- **Realistic Scenarios**: Representative of actual user data and workflows
-
-### Test Database Management
-- **In-Memory SQLite**: Fast, isolated, no cleanup required
-- **Transactional Rollback**: Each test starts with clean state
-- **Schema Validation**: Tests verify database constraints
-- **Migration Testing**: Schema changes tested against sample data
-
-## Quality Gates & Automation
-
-### Pre-commit Hooks (Required)
-**Trigger**: Before each commit
-**Timeout**: <30 seconds
-**Failure Behavior**: Block commit with clear error messages
-
-**Checks**:
-- **Code Formatting**: Black (Python), Prettier (JavaScript/TypeScript)
-- **Import Sorting**: isort (Python), eslint import/sort (JavaScript)
-- **Linting**: flake8 (Python), eslint (JavaScript/TypeScript)
-- **Type Checking**: mypy (Python), tsc (TypeScript)
-- **Fast Unit Tests**: Subset of critical path tests (<5 seconds)
-
-### CI Pipeline (Required)
-**Trigger**: Push to feature branches, all PRs
-**Platforms**: Ubuntu (primary), Windows/macOS (validation)
-**Timeout**: <10 minutes total
-**Required Status**: Must pass before merge
-
-**Stages**:
-1. **Lint & Type Check** (<1 minute): All static analysis
-2. **Unit Tests** (<2 minutes): Full unit test suite with coverage
-3. **Integration Tests** (<3 minutes): API + database tests
-4. **E2E Tests** (<3 minutes): Full browser automation
-5. **Accessibility Audit** (<1 minute): WCAG compliance check
-6. **Performance Budget** (<30 seconds): Response time validation
-
-### Coverage Requirements
-- **Unit Tests**: ≥80% statement, ≥90% branch coverage
-- **Integration Tests**: ≥90% API endpoint coverage
-- **E2E Tests**: ≥95% user workflow coverage
-- **Accessibility**: 100% WCAG 2.1 AA compliance
-- **Overall**: ≥95% acceptance criteria test coverage
-
-## Performance Budget Checks
-
-### API Response Times
-- **Health Check**: <50ms (GET /health)
-- **Task CRUD**: <100ms (typical operations)
-- **Task Queries**: <500ms (complex filters on 10k tasks)
-- **Export Operations**: <30 seconds (10k tasks to JSON/CSV)
-
-### Startup Performance
-- **Backend**: <2 seconds (FastAPI startup + database init)
-- **Frontend**: <3 seconds (React hydration + data load)
-- **Total**: <5 seconds (full application ready)
-
-### Resource Usage
-- **Memory**: <200MB (normal operation peak)
-- **Database Size**: <10MB (10k tasks with full metadata)
-- **CPU**: <10% average (background operations)
-
-### Performance Test Automation
-- **Load Testing**: Artillery.js for API endpoint stress testing
-- **Bundle Analysis**: webpack-bundle-analyzer for frontend assets
-- **Lighthouse CI**: Automated performance scoring
-- **Database Benchmarks**: Custom scripts for query performance
-
-## Test Organization & Naming
-
-### File Structure
 ```
-tests/
-├── unit/                    # Unit tests (pytest)
-│   ├── test_task_model.py
-│   ├── test_validation.py
-│   └── test_queries.py
-├── integration/             # Integration tests (pytest)
-│   ├── test_api_endpoints.py
-│   └── test_database.py
-├── e2e/                     # E2E tests (playwright)
-│   ├── specs/
-│   │   ├── task-management.spec.ts
-│   │   └── view-navigation.spec.ts
-│   └── fixtures/
-└── accessibility/           # A11y tests (axe-core)
-    ├── test-contrast.js
-    └── test-navigation.js
+E2E Tests (Integration)
+    │
+    ├─ API Integration Tests
+    │
+    ├─ Component Integration Tests
+    │
+Unit Tests (Foundation)
+    │
+    ├─ Backend Unit Tests
+    │
+    └─ Frontend Unit Tests
 ```
 
-### Naming Conventions
-- **Test Files**: `test_*.py`, `*.spec.ts`, `test-*.js`
-- **Test Functions**: `test_*` with descriptive names
-- **Test Classes**: `Test*` for pytest class-based tests
-- **Mock Objects**: `mock_*`, `fake_*`, `stub_*`
+## Backend Testing
 
-### Test Metadata
-- **Issue Links**: Reference SPEC acceptance criteria
-- **Performance Benchmarks**: Mark slow tests for separate execution
-- **Flaky Tests**: Quarantine and track separately
-- **Manual Tests**: Document in comments for regression testing
+### Unit Tests (`pytest`)
+- **Location**: `tests/`
+- **Coverage Target**: >90%
+- **Framework**: pytest + pytest-cov
+- **Focus**: Business logic, data validation, API responses
 
-## Test Execution & Reporting
+**Test Categories:**
+- Model validation and serialization
+- API endpoint responses
+- Database operations
+- Authentication/authorization logic
+- Error handling
 
-### Local Development
-- **Watch Mode**: Automatic re-run on file changes
-- **Debug Mode**: Step-through debugging with breakpoints
-- **Coverage Reports**: HTML reports with missing line highlights
-- **Selective Running**: Run specific tests, modules, or tags
+**Example Test Structure:**
+```python
+# tests/test_api.py
+def test_create_task_success(client, db_session):
+    # Arrange
+    task_data = {"title": "Test Task", "status": "todo"}
 
-### CI/CD Integration
-- **Parallel Execution**: Split tests across multiple workers
-- **Artifact Collection**: Screenshots, videos, logs on failure
-- **Coverage Upload**: Send reports to external services
-- **Status Reporting**: Update PR checks with detailed results
+    # Act
+    response = client.post("/api/v1/tasks", json=task_data)
 
-### Test Result Analysis
-- **Failure Triaging**: Categorize failures (code vs environment vs flaky)
-- **Trend Analysis**: Track test reliability and performance over time
-- **Root Cause Analysis**: Debug failures with detailed logging
-- **Regression Prevention**: Block merges until failures are addressed
+    # Assert
+    assert response.status_code == 201
+    assert response.json()["title"] == "Test Task"
+```
 
-## Test Maintenance Guidelines
+### Integration Tests
+- **Database Integration**: Alembic migrations + SQLite
+- **API Integration**: Full request/response cycles
+- **External Services**: Mocked where necessary
 
-### Refactoring Tests
-- **DRY Principle**: Extract common setup/teardown into fixtures
-- **Test Data Builders**: Use fluent interfaces for complex objects
-- **Custom Assertions**: Create domain-specific assertion helpers
-- **Page Objects**: Abstract UI interactions for E2E tests
+## Frontend Testing
 
-### Adding New Tests
-- **TDD Approach**: Write test first, then implementation
-- **Acceptance Criteria**: Every SPEC requirement must have tests
-- **Edge Cases**: Test boundaries and error conditions
-- **Performance**: Include performance assertions where specified
+### Unit Tests (`Vitest + React Testing Library`)
+- **Location**: `frontend/src/**/*.test.tsx`
+- **Coverage Target**: >80%
+- **Framework**: Vitest + @testing-library/react
 
-### Test Debt Management
-- **Technical Debt**: Track and prioritize test improvements
-- **Flaky Tests**: Investigate root causes, fix or remove
-- **Maintenance Burden**: Keep tests fast, reliable, and maintainable
-- **Documentation**: Update test docs when behavior changes
+**Test Categories:**
+- Component rendering and props
+- User interactions (clicks, form inputs)
+- State management (React Query)
+- Error boundaries and error states
+
+**Example Test Structure:**
+```typescript
+// frontend/src/components/TaskModal.test.tsx
+describe('TaskModal', () => {
+  it('creates task on form submission', async () => {
+    // Arrange
+    render(<TaskModal isOpen={true} onClose={mockClose} />);
+
+    // Act
+    await userEvent.type(screen.getByLabelText(/title/i), 'New Task');
+    await userEvent.click(screen.getByRole('button', { name: /create/i }));
+
+    // Assert
+    expect(mockCreateMutation).toHaveBeenCalledWith({
+      title: 'New Task',
+      status: 'todo'
+    });
+  });
+});
+```
+
+### Component Integration Tests
+- **API Integration**: Mocked API responses
+- **Router Integration**: React Router testing
+- **Form Integration**: Form validation and submission
+
+## E2E Testing
+
+### Playwright Tests
+- **Location**: `e2e/`
+- **Framework**: Playwright
+- **Coverage**: Critical user journeys
+
+**Test Scenarios:**
+1. **Task Management Flow**
+   - Create task → View task → Complete task → Delete task
+
+2. **User Authentication** (Future)
+   - Login → Access protected routes → Logout
+
+3. **Data Persistence**
+   - Create data → Refresh page → Verify data persists
+
+**Example E2E Test:**
+```typescript
+// e2e/task-management.spec.ts
+test('complete task management workflow', async ({ page }) => {
+  await page.goto('/');
+
+  // Create task
+  await page.click('[data-testid="add-task-button"]');
+  await page.fill('[data-testid="task-title"]', 'E2E Test Task');
+  await page.click('[data-testid="create-task"]');
+
+  // Verify task appears
+  await expect(page.locator('text=E2E Test Task')).toBeVisible();
+
+  // Complete task
+  await page.click('[data-testid="task-checkbox"]');
+  await expect(page.locator('text=E2E Test Task')).not.toBeVisible();
+});
+```
+
+## Code Quality & Security
+
+### Pre-commit Hooks
+- **Black**: Python code formatting
+- **isort**: Import sorting
+- **flake8**: Python linting
+- **mypy**: Type checking
+- **ESLint**: JavaScript/TypeScript linting
+- **Prettier**: YAML formatting
+- **detect-secrets**: Security scanning
+
+### CI/CD Quality Gates
+- **Test Coverage**: Backend >90%, Frontend >80%
+- **Code Quality**: All pre-commit hooks pass
+- **Security**: No secrets in code, vulnerability scanning
+- **Performance**: Bundle size checks, Lighthouse scores
+
+## Test Data Management
+
+### Test Database
+- **SQLite**: In-memory for unit tests
+- **Migrations**: Alembic migrations applied
+- **Fixtures**: Pytest fixtures for test data
+
+### Mock Data Strategy
+- **API Responses**: Mock Service Worker (MSW)
+- **External APIs**: Mocked with pytest-mock
+- **File Operations**: Temporary directories
+
+## Performance Testing
+
+### Load Testing
+- **API Load**: Locust or k6 for API endpoints
+- **Frontend**: Lighthouse CI for performance budgets
+- **Database**: Query performance monitoring
+
+### Bundle Analysis
+- **JavaScript Bundle**: Webpack Bundle Analyzer
+- **Python Dependencies**: pip-tools for dependency management
+
+## Accessibility Testing
+
+### Automated Checks
+- **axe-core**: Automated accessibility testing
+- **Lighthouse**: Accessibility audits
+- **Color Contrast**: Automated contrast ratio checks
+
+### Manual Testing
+- **Screen Readers**: NVDA, JAWS testing
+- **Keyboard Navigation**: Full keyboard-only workflows
+- **Mobile Accessibility**: Touch targets, screen reader support
+
+## Browser Compatibility
+
+### Supported Browsers
+- Chrome/Edge 88+
+- Firefox 85+
+- Safari 14+
+- Mobile: iOS Safari, Chrome Mobile
+
+### Testing Strategy
+- **Cross-browser Testing**: Playwright for multiple browsers
+- **Mobile Testing**: Device emulation + real device testing
+- **Regression Testing**: Visual regression with Percy/Applitools
+
+## Continuous Integration
+
+### GitHub Actions Workflow
+- **Triggers**: Push to main/feature branches, PRs
+- **Jobs**:
+  - Backend tests + coverage
+  - Frontend tests + coverage
+  - Integration tests
+  - Code quality checks
+  - Security scanning
+  - Docker build verification
+
+### Quality Gates
+- All tests pass
+- Coverage thresholds met
+- No linting errors
+- Security scan clean
+- Docker build successful
+
+## Monitoring & Reporting
+
+### Test Results
+- **JUnit XML**: For CI integration
+- **Coverage Reports**: Codecov integration
+- **Test Analytics**: Historical trends and flaky test detection
+
+### Failure Handling
+- **Flaky Tests**: Retry logic and alerting
+- **Test Failures**: Detailed error reporting
+- **Performance Regressions**: Automated alerts
+
+## Future Enhancements
+
+### Advanced Testing
+- **Property-based Testing**: Hypothesis for Python
+- **Contract Testing**: Pact for API contracts
+- **Chaos Engineering**: Failure injection testing
+- **A/B Testing**: Feature flag testing framework
+
+### CI/CD Improvements
+- **Parallel Testing**: Split test suites across multiple runners
+- **Test Caching**: Intelligent test result caching
+- **Deployment Automation**: Blue/green deployments
+- **Rollback Automation**: Automated rollback on failures
+
+---
+
+This testing strategy ensures robust, maintainable code with comprehensive coverage across all layers of the application.
