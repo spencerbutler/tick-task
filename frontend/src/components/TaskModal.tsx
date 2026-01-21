@@ -18,12 +18,16 @@ interface TaskFormData {
 export function TaskModal({ isOpen, onClose }: TaskModalProps) {
   const queryClient = useQueryClient();
 
+  // Set today's date as default due date
+  const todayDateTime = new Date().toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:mm
+
   const [formData, setFormData] = useState<TaskFormData>({
     title: '',
     description: '',
     priority: 'medium',
     context: 'personal',
     tags: '',
+    due_at: todayDateTime, // Default to today
   });
 
   const createTaskMutation = useMutation({
@@ -55,6 +59,7 @@ export function TaskModal({ isOpen, onClose }: TaskModalProps) {
         priority: 'medium',
         context: 'personal',
         tags: '',
+        due_at: todayDateTime, // Reset to today's date
       });
       onClose();
     },
