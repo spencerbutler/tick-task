@@ -4,8 +4,11 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from fastapi.responses import RedirectResponse
+
 from fin_tasks.api import router as api_router
 from fin_tasks.config import settings
+from fin_tasks.database import create_tables
 
 
 def create_application() -> FastAPI:
@@ -14,7 +17,7 @@ def create_application() -> FastAPI:
     app = FastAPI(
         title="FIN-tasks",
         description="Local-first task management application",
-        version="0.4.0",
+        version="0.5.0",
         docs_url="/docs",
         redoc_url="/redoc",
     )
@@ -27,6 +30,12 @@ def create_application() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    # Root route - redirect to API docs
+    @app.get("/", include_in_schema=False)
+    async def root():
+        """Redirect root to API documentation."""
+        return RedirectResponse(url="/docs")
 
     # Include API routes
     app.include_router(api_router, prefix="/api/v1")

@@ -1,4 +1,4 @@
-import { useTasks } from '@/hooks/useTasks';
+import { useTasks } from '../hooks/useTasks';
 
 export function TodayView() {
   const { data: tasksData, isLoading, error } = useTasks({
@@ -45,11 +45,27 @@ export function TodayView() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Today</h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-2">
-          Tasks due today and overdue items
-        </p>
+      <div className="mb-8 flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Today</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
+            Tasks due today and overdue items
+          </p>
+        </div>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={() => {
+            // TODO: Open task creation modal
+            console.log('Add new task');
+          }}
+          title="Add New Task"
+        >
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          <span className="ml-2">Add Task</span>
+        </button>
       </div>
 
       {tasks.length === 0 ? (
