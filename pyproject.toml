@@ -55,6 +55,7 @@ dev = [
 
 [project.scripts]
 fin-tasks = "fin_tasks.main:main"
+fin-tasks-dev = "dev:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

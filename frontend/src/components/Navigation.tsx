@@ -40,22 +40,7 @@ export function Navigation() {
             </div>
           </div>
 
-          <div className="flex items-center">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => {
-                // TODO: Open quick add modal
-                console.log('Quick add task');
-              }}
-              title="Quick Add Task (Ctrl+N)"
-            >
-              <span className="sr-only">Quick Add Task</span>
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
-            </button>
-          </div>
+          {/* Plus button moved to TodayView */}
         </div>
       </div>
     </nav>

@@ -12,11 +12,11 @@ class TaskBase(BaseModel):
 
     title: str = Field(..., min_length=1, max_length=200, description="Task title")
     description: Optional[str] = Field(None, max_length=2000, description="Task description")
-    status: str = Field("todo", description="Task status", regex=r"^(todo|doing|blocked|done|archived)$")
-    priority: str = Field("medium", description="Task priority", regex=r"^(low|medium|high|urgent)$")
+    status: str = Field("todo", description="Task status", pattern=r"^(todo|doing|blocked|done|archived)$")
+    priority: str = Field("medium", description="Task priority", pattern=r"^(low|medium|high|urgent)$")
     due_at: Optional[datetime] = Field(None, description="Due date and time in ISO format")
     tags: list[str] = Field(default_factory=list, description="List of tags")
-    context: str = Field("personal", description="Task context", regex=r"^(personal|professional|mixed)$")
+    context: str = Field("personal", description="Task context", pattern=r"^(personal|professional|mixed)$")
     workspace: Optional[str] = Field(None, max_length=100, description="Workspace name")
 
     @validator("tags", each_item=True)
@@ -52,11 +52,11 @@ class TaskUpdate(BaseModel):
 
     title: Optional[str] = Field(None, min_length=1, max_length=200)
     description: Optional[str] = Field(None, max_length=2000)
-    status: Optional[str] = Field(None, regex=r"^(todo|doing|blocked|done|archived)$")
-    priority: Optional[str] = Field(None, regex=r"^(low|medium|high|urgent)$")
+    status: Optional[str] = Field(None, pattern=r"^(todo|doing|blocked|done|archived)$")
+    priority: Optional[str] = Field(None, pattern=r"^(low|medium|high|urgent)$")
     due_at: Optional[datetime] = None
     tags: Optional[list[str]] = None
-    context: Optional[str] = Field(None, regex=r"^(personal|professional|mixed)$")
+    context: Optional[str] = Field(None, pattern=r"^(personal|professional|mixed)$")
     workspace: Optional[str] = Field(None, max_length=100)
 
     @validator("tags", each_item=True)
@@ -92,7 +92,7 @@ class Task(TaskBase):
 
     class Config:
         """Pydantic configuration."""
-        orm_mode = True
+        from_attributes = True
         json_encoders = {
             datetime: lambda v: v.isoformat(),
         }

@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { TodayView } from '@/views/TodayView';
-import { InboxView } from '@/views/InboxView';
-import { ContextsView } from '@/views/ContextsView';
-import { TagsView } from '@/views/TagsView';
-import { Navigation } from '@/components/Navigation';
-import { TaskModal } from '@/components/TaskModal';
+import { TodayView } from './views/TodayView';
+import { InboxView } from './views/InboxView';
+import { ContextsView } from './views/ContextsView';
+import { TagsView } from './views/TagsView';
+import { Navigation } from './components/Navigation';
+import { TaskModal } from './components/TaskModal';
 
 function App() {
   return (

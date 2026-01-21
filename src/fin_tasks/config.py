@@ -4,7 +4,8 @@ import os
 from pathlib import Path
 from typing import Optional
 
-from pydantic import BaseSettings, Field
+from pydantic_settings import BaseSettings
+from pydantic import Field
 
 
 class Settings(BaseSettings):
@@ -12,7 +13,7 @@ class Settings(BaseSettings):
 
     # Server settings
     host: str = Field("127.0.0.1", description="Server host")
-    port: int = Field(8000, description="Server port", ge=1024, le=65535)
+    port: int = Field(7000, description="Server port", ge=1024, le=65535)
     debug: bool = Field(False, description="Debug mode")
 
     # Database settings
