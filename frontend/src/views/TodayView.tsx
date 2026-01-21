@@ -1,6 +1,10 @@
 import { useTasks } from '../hooks/useTasks';
 
-export function TodayView() {
+interface TodayViewProps {
+  onAddTask: () => void;
+}
+
+export function TodayView({ onAddTask }: TodayViewProps) {
   const { data: tasksData, isLoading, error } = useTasks({
     status: 'todo,doing,blocked',
     due_before: new Date().toISOString().split('T')[0] + 'T23:59:59Z',
@@ -55,10 +59,7 @@ export function TodayView() {
         <button
           type="button"
           className="btn btn-primary"
-          onClick={() => {
-            // TODO: Open task creation modal
-            console.log('Add new task');
-          }}
+          onClick={onAddTask}
           title="Add New Task"
         >
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
