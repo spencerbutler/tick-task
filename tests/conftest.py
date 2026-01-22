@@ -11,6 +11,8 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
+from sqlalchemy import text
+
 from tick_task.config import settings
 from tick_task.database import get_db
 from tick_task.models import Base
@@ -59,7 +61,7 @@ async def db_session(test_engine) -> AsyncGenerator[AsyncSession, None]:
 
     async with async_session() as session:
         # Clear any existing data
-        await session.execute("DELETE FROM tasks")
+        await session.execute(text("DELETE FROM tasks"))
 
         yield session
 
