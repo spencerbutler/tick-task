@@ -1,16 +1,17 @@
 """Tests for Pydantic schemas."""
 
-import pytest
 from datetime import datetime
+
+import pytest
 from pydantic import ValidationError
 
 from tick_task.schemas import (
-    TaskCreate,
-    TaskUpdate,
-    Task,
-    TaskList,
-    HealthResponse,
     ErrorResponse,
+    HealthResponse,
+    Task,
+    TaskCreate,
+    TaskList,
+    TaskUpdate,
 )
 
 
@@ -231,7 +232,7 @@ class TestTaskSchema:
         """Test that Task schema works with from_attributes=True."""
         # This tests the ConfigDict.from_attributes setting
         # which allows ORM objects to be converted to Pydantic models
-        assert Task.model_config['from_attributes'] is True
+        assert Task.model_config["from_attributes"] is True
 
 
 class TestTaskListSchema:
@@ -239,7 +240,9 @@ class TestTaskListSchema:
 
     def test_task_list_empty(self):
         """Test empty task list."""
-        task_list = TaskList(tasks=[], pagination={"has_more": False, "next_cursor": None})
+        task_list = TaskList(
+            tasks=[], pagination={"has_more": False, "next_cursor": None}
+        )
         assert task_list.tasks == []
         assert task_list.pagination["has_more"] is False
 
@@ -299,7 +302,7 @@ class TestSchemaSerialization:
         dt = datetime(2024, 12, 31, 23, 59, 59, 123456)
 
         task = TaskCreate(title="Test", due_at=dt)
-        json_data = task.json()
+        json_data = task.model_dump_json()
 
         # Should contain ISO format datetime
         assert "2024-12-31T23:59:59.123456" in json_data
@@ -313,11 +316,8 @@ class TestSchemaSerialization:
             "updated_at": datetime(2024, 1, 2, 12, 0, 0),
         }
 
-        task_list = TaskList(
-            tasks=[Task(**task_data)],
-            pagination={"has_more": False}
-        )
+        task_list = TaskList(tasks=[Task(**task_data)], pagination={"has_more": False})
 
-        json_data = task_list.json()
+        json_data = task_list.model_dump_json()
         # Should contain ISO format datetimes
         assert "2024-01-01T12:00:00" in json_data

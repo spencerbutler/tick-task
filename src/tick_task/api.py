@@ -2,22 +2,18 @@
 
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import select, or_
+from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from tick_task.config import settings
 from tick_task.database import get_db
 from tick_task.models import Task
-from tick_task.schemas import (
-    ErrorResponse,
-    HealthResponse,
-    Task as TaskSchema,
-    TaskCreate,
-    TaskList,
-    TaskUpdate,
-)
+from tick_task.schemas import ErrorResponse, HealthResponse
+from tick_task.schemas import Task as TaskSchema
+from tick_task.schemas import TaskCreate, TaskList, TaskUpdate
 
 router = APIRouter()
 
@@ -32,7 +28,9 @@ async def health_check(db: AsyncSession = Depends(get_db)) -> HealthResponse:
     """Check service health and database connectivity."""
     try:
         # Test database connection
-        await db.execute("SELECT 1")
+        from sqlalchemy import text
+
+        await db.execute(text("SELECT 1"))
         db_status = "connected"
     except Exception:
         db_status = "disconnected"
@@ -96,11 +94,11 @@ async def create_task(
     },
 )
 async def get_task(
-    task_id: str,
+    task_id: UUID,
     db: AsyncSession = Depends(get_db),
 ) -> TaskSchema:
     """Get a specific task by ID."""
-    task = await db.get(Task, task_id)
+    task = await db.get(Task, str(task_id))
     if not task:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -122,12 +120,12 @@ async def get_task(
     },
 )
 async def update_task(
-    task_id: str,
+    task_id: UUID,
     task_update: TaskUpdate,
     db: AsyncSession = Depends(get_db),
 ) -> TaskSchema:
     """Update an existing task."""
-    task = await db.get(Task, task_id)
+    task = await db.get(Task, str(task_id))
     if not task:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -172,11 +170,11 @@ async def update_task(
     },
 )
 async def delete_task(
-    task_id: str,
+    task_id: UUID,
     db: AsyncSession = Depends(get_db),
 ) -> TaskSchema:
     """Soft delete (archive) a task."""
-    task = await db.get(Task, task_id)
+    task = await db.get(Task, str(task_id))
     if not task:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -207,22 +205,23 @@ async def delete_task(
 )
 async def list_tasks(
     # Filtering parameters
-    status: Optional[list[str]] = Query(None, description="Filter by status (can specify multiple)"),
+    status: Optional[list[str]] = Query(
+        None, description="Filter by status (can specify multiple)"
+    ),
     context: Optional[str] = Query(None, description="Filter by context"),
     tags: Optional[str] = Query(None, description="Filter by tags (comma-separated)"),
     priority: Optional[str] = Query(None, description="Minimum priority level"),
     due_before: Optional[datetime] = Query(None, description="Tasks due before date"),
     due_after: Optional[datetime] = Query(None, description="Tasks due after date"),
-    updated_since: Optional[datetime] = Query(None, description="Tasks updated since date"),
-
+    updated_since: Optional[datetime] = Query(
+        None, description="Tasks updated since date"
+    ),
     # Sorting parameters
     sort: str = Query("updated_at", description="Sort field"),
     order: str = Query("desc", description="Sort order (asc/desc)"),
-
     # Pagination parameters
     limit: int = Query(100, ge=1, le=1000, description="Maximum results"),
     cursor: Optional[str] = Query(None, description="Pagination cursor"),
-
     db: AsyncSession = Depends(get_db),
 ) -> TaskList:
     """List tasks with filtering, sorting, and pagination."""
@@ -253,10 +252,11 @@ async def list_tasks(
         priority_order = {"low": 0, "medium": 1, "high": 2, "urgent": 3}
         min_priority_value = priority_order.get(priority, 0)
         priority_conditions = [
-            Task.priority == p for p in priority_order
+            Task.priority == p
+            for p in priority_order
             if priority_order[p] >= min_priority_value
         ]
-        query = query.where(db.or_(*priority_conditions))
+        query = query.where(or_(*priority_conditions))
 
     if due_before:
         query = query.where(Task.due_at < due_before)
@@ -282,7 +282,9 @@ async def list_tasks(
         tasks=[TaskSchema.from_orm(task) for task in task_list],
         pagination={
             "has_more": len(task_list) == limit,
-            "next_cursor": f"offset_{len(task_list)}" if len(task_list) == limit else None,
+            "next_cursor": f"offset_{len(task_list)}"
+            if len(task_list) == limit
+            else None,
             "total_count": len(task_list),
         },
     )

@@ -1,6 +1,7 @@
 """Tests for database configuration and connections."""
 
 import pytest
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from tick_task.database import get_db
@@ -13,7 +14,7 @@ class TestDatabaseConnection:
     async def test_database_connection(self, db_session):
         """Test that database connection works."""
         # Execute a simple query to test connection
-        result = await db_session.execute("SELECT 1 as test")
+        result = await db_session.execute(text("SELECT 1 as test"))
         row = result.first()
 
         assert row is not None
@@ -26,7 +27,9 @@ class TestDatabaseConnection:
     async def test_database_tables_created(self, db_session):
         """Test that database tables are created."""
         # Check if tasks table exists by trying to query it
-        result = await db_session.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='tasks'")
+        result = await db_session.execute(
+            text("SELECT name FROM sqlite_master WHERE type='table' AND name='tasks'")
+        )
         table = result.first()
 
         assert table is not None

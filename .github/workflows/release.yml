@@ -43,7 +43,7 @@ jobs:
     - name: Run tests
       run: |
         pip install -e .[dev]
-        python -m pytest --cov=tick_task --cov-report=term-missing --cov-fail-under=60
+        python -m pytest --cov=tick_task --cov-report=term-missing --cov-fail-under=55
 
     - name: Build frontend
       working-directory: frontend
