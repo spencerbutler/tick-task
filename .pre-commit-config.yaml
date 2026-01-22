@@ -80,5 +80,5 @@ repos:
         pass_filenames: false
         stages: [push]
         env:
-          PYTHONPATH: src
+          PYTHONPATH: $PWD/src
         description: "Run test suite with coverage before pushing"
