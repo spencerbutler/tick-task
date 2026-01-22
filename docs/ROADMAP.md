@@ -262,6 +262,41 @@ docs: Update testing strategy with coverage targets
 - Maintain linear history where possible
 - Squash commits before merging to main
 
+### Git Automation - No Manual Interventions
+**Eliminate vim prompts and manual confirmations for automated workflows:**
+
+**Configuration:**
+```bash
+# Set git to not open editor for automation
+git config --global core.editor "true"
+git config --global merge.ff false
+
+# Environment variable for CI/CD
+export GIT_EDITOR="true"
+```
+
+**Automated Commands:**
+```bash
+# Cherry-picks without editing
+git cherry-pick --no-edit <commit>
+
+# Merges without prompts
+git merge --no-edit <branch>
+
+# Rebase continuation
+GIT_EDITOR="true" git rebase --continue
+
+# CI/CD operations
+export GIT_EDITOR="true"
+git cherry-pick --continue
+```
+
+**Benefits:**
+- ✅ Zero manual interventions in automated workflows
+- ✅ CI/CD pipelines run without stopping
+- ✅ Development velocity maintained
+- ✅ Consistent commit history
+
 ### CI/CD Maintenance
 **Monitoring:**
 - Check GitHub Actions tab for pipeline failures
