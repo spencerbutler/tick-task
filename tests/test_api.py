@@ -1,7 +1,8 @@
 """Tests for API endpoints."""
 
-import pytest
 from datetime import datetime
+
+import pytest
 from fastapi import status
 
 from tick_task.schemas import TaskCreate, TaskUpdate

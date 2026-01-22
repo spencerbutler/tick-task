@@ -1,7 +1,8 @@
 """Integration tests for end-to-end workflows."""
 
-import pytest
 from datetime import datetime, timedelta
+
+import pytest
 from fastapi import status
 
 
@@ -75,7 +76,9 @@ class TestTaskLifecycleIntegration:
 
         # 6. Verify archived task can't be updated
         final_update_data = {"title": "Should Fail"}
-        final_update_response = client.put(f"/api/v1/tasks/{task_id}", json=final_update_data)
+        final_update_response = client.put(
+            f"/api/v1/tasks/{task_id}", json=final_update_data
+        )
         assert final_update_response.status_code == status.HTTP_409_CONFLICT
 
 
@@ -161,7 +164,9 @@ class TestTaskConcurrencyIntegration:
     def test_concurrent_task_operations(self, client):
         """Test that multiple operations work correctly together."""
         # Create initial task
-        create_response = client.post("/api/v1/tasks", json={"title": "Concurrency Test"})
+        create_response = client.post(
+            "/api/v1/tasks", json={"title": "Concurrency Test"}
+        )
         assert create_response.status_code == status.HTTP_201_CREATED
         task_id = create_response.json()["id"]
 
@@ -182,8 +187,8 @@ class TestTaskConcurrencyIntegration:
         final_task = final_response.json()
 
         assert final_task["title"] == "Update 3"  # Last update
-        assert final_task["status"] == "done"     # Last status update
-        assert final_task["priority"] == "high"   # Priority update persisted
+        assert final_task["status"] == "done"  # Last status update
+        assert final_task["priority"] == "high"  # Priority update persisted
         assert final_task["completed_at"] is not None
 
 
