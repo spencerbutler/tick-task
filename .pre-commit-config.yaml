@@ -69,3 +69,15 @@ repos:
       - id: detect-secrets
         args: ['--baseline', '.secrets.baseline']
         exclude: ^(tests|frontend)/
+
+  # Test validation (runs before push)
+  - repo: local
+    hooks:
+      - id: run-tests
+        name: Run test suite
+        entry: python -m pytest
+        args: [--cov=tick_task, --cov-report=term-missing, --cov-fail-under=60, -x]
+        language: system
+        pass_filenames: false
+        stages: [push]
+        description: "Run test suite with coverage before pushing"
