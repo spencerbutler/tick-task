@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 
 
 class TaskBase(BaseModel):
@@ -19,27 +19,33 @@ class TaskBase(BaseModel):
     context: str = Field("personal", description="Task context", pattern=r"^(personal|professional|mixed)$")
     workspace: Optional[str] = Field(None, max_length=100, description="Workspace name")
 
-    @validator("tags", each_item=True)
+    @field_validator("tags", mode="before")
+    @classmethod
     def validate_tag(cls, v):
         """Validate individual tag constraints."""
-        if len(v) > 50:
-            raise ValueError("Tag must be 50 characters or less")
-        if not v.strip():
-            raise ValueError("Tag cannot be empty or whitespace-only")
-        return v.strip().lower()
+        if isinstance(v, list):
+            for tag in v:
+                if len(tag) > 50:
+                    raise ValueError("Tag must be 50 characters or less")
+                if not tag.strip():
+                    raise ValueError("Tag cannot be empty or whitespace-only")
+                tag = tag.strip().lower()
+            return v
+        return v
 
-    @validator("title")
+    @field_validator("title")
+    @classmethod
     def validate_title(cls, v):
         """Validate title is not empty after stripping."""
         if not v.strip():
             raise ValueError("Title cannot be empty or whitespace-only")
         return v.strip()
 
-    class Config:
-        """Pydantic configuration."""
-        json_encoders = {
+    model_config = ConfigDict(
+        json_encoders={
             datetime: lambda v: v.isoformat(),
         }
+    )
 
 
 class TaskCreate(TaskBase):
@@ -59,27 +65,33 @@ class TaskUpdate(BaseModel):
     context: Optional[str] = Field(None, pattern=r"^(personal|professional|mixed)$")
     workspace: Optional[str] = Field(None, max_length=100)
 
-    @validator("tags", each_item=True)
+    @field_validator("tags", mode="before")
+    @classmethod
     def validate_tag(cls, v):
         """Validate individual tag constraints."""
-        if len(v) > 50:
-            raise ValueError("Tag must be 50 characters or less")
-        if not v.strip():
-            raise ValueError("Tag cannot be empty or whitespace-only")
-        return v.strip().lower()
+        if isinstance(v, list) and v is not None:
+            for tag in v:
+                if len(tag) > 50:
+                    raise ValueError("Tag must be 50 characters or less")
+                if not tag.strip():
+                    raise ValueError("Tag cannot be empty or whitespace-only")
+                tag = tag.strip().lower()
+            return v
+        return v
 
-    @validator("title")
+    @field_validator("title")
+    @classmethod
     def validate_title(cls, v):
         """Validate title is not empty after stripping."""
         if v is not None and not v.strip():
             raise ValueError("Title cannot be empty or whitespace-only")
         return v.strip() if v is not None else v
 
-    class Config:
-        """Pydantic configuration."""
-        json_encoders = {
+    model_config = ConfigDict(
+        json_encoders={
             datetime: lambda v: v.isoformat(),
         }
+    )
 
 
 class Task(TaskBase):
@@ -90,12 +102,12 @@ class Task(TaskBase):
     updated_at: datetime = Field(..., description="Last update timestamp")
     completed_at: Optional[datetime] = Field(None, description="Completion timestamp")
 
-    class Config:
-        """Pydantic configuration."""
-        from_attributes = True
-        json_encoders = {
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_encoders={
             datetime: lambda v: v.isoformat(),
         }
+    )
 
 
 class TaskList(BaseModel):
@@ -104,11 +116,11 @@ class TaskList(BaseModel):
     tasks: list[Task] = Field(..., description="List of tasks")
     pagination: dict = Field(..., description="Pagination metadata")
 
-    class Config:
-        """Pydantic configuration."""
-        json_encoders = {
+    model_config = ConfigDict(
+        json_encoders={
             datetime: lambda v: v.isoformat(),
         }
+    )
 
 
 class HealthResponse(BaseModel):
@@ -119,11 +131,11 @@ class HealthResponse(BaseModel):
     database: str = Field(..., description="Database status")
     timestamp: datetime = Field(..., description="Response timestamp")
 
-    class Config:
-        """Pydantic configuration."""
-        json_encoders = {
+    model_config = ConfigDict(
+        json_encoders={
             datetime: lambda v: v.isoformat(),
         }
+    )
 
 
 class ErrorResponse(BaseModel):
@@ -131,8 +143,8 @@ class ErrorResponse(BaseModel):
 
     error: dict = Field(..., description="Error details")
 
-    class Config:
-        """Pydantic configuration."""
-        json_encoders = {
+    model_config = ConfigDict(
+        json_encoders={
             datetime: lambda v: v.isoformat(),
         }
+    )

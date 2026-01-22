@@ -229,9 +229,9 @@ class TestTaskSchema:
 
     def test_task_from_orm_compatibility(self):
         """Test that Task schema works with from_attributes=True."""
-        # This tests the Config.from_attributes setting
+        # This tests the ConfigDict.from_attributes setting
         # which allows ORM objects to be converted to Pydantic models
-        assert Task.__config__.from_attributes is True
+        assert Task.model_config['from_attributes'] is True
 
 
 class TestTaskListSchema:
