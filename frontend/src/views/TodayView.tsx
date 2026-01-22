@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { useTasks, useUpdateTask } from '../hooks/useTasks';
 
 interface TodayViewProps {
@@ -194,9 +195,30 @@ export function TodayView({ onAddTask }: TodayViewProps) {
                             {task.title}
                           </h3>
                           {task.description && (
-                            <p className="text-gray-600 dark:text-gray-400 text-sm mt-1 line-clamp-2">
-                              {task.description}
-                            </p>
+                            <div className="text-gray-600 dark:text-gray-400 text-sm mt-1 prose prose-sm max-w-none dark:prose-invert">
+                              <ReactMarkdown
+                                skipHtml={true}
+                                components={{
+                                  p: ({ children }) => <p className="mb-1 last:mb-0 line-clamp-3">{children}</p>,
+                                  ul: ({ children }) => <ul className="mb-1 ml-4 list-disc">{children}</ul>,
+                                  ol: ({ children }) => <ol className="mb-1 ml-4 list-decimal">{children}</ol>,
+                                  li: ({ children }) => <li className="mb-0.5">{children}</li>,
+                                  strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                                  em: ({ children }) => <em className="italic">{children}</em>,
+                                  code: ({ children }) => <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-xs font-mono">{children}</code>,
+                                  pre: ({ children }) => <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded text-xs font-mono overflow-x-auto mb-1">{children}</pre>,
+                                  a: ({ href, children }) => {
+                                    // Only allow http/https URLs for security
+                                    if (!href || !/^https?:\/\//.test(href)) {
+                                      return <span>{children}</span>;
+                                    }
+                                    return <a href={href} className="text-primary-600 hover:text-primary-700 underline" target="_blank" rel="noopener noreferrer">{children}</a>;
+                                  },
+                                }}
+                              >
+                                {task.description}
+                              </ReactMarkdown>
+                            </div>
                           )}
                         </div>
                         <button
