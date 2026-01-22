@@ -1,0 +1,8 @@
+{
+  "include": ["src", "tests"],
+  "exclude": ["frontend/node_modules", "build", "dist"],
+  "pythonVersion": "3.10",
+  "typeCheckingMode": "basic",
+  "reportMissingImports": "warning",
+  "reportMissingTypeStubs": "none"
+}

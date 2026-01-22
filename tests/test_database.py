@@ -1,6 +1,7 @@
 """Tests for database configuration and connections."""
 
 import pytest
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from tick_task.database import get_db

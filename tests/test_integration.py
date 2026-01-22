@@ -19,7 +19,7 @@ class TestTaskLifecycleIntegration:
             "tags": ["integration", "test"],
         }
 
-        create_response = client.post("/tasks", json=create_data)
+        create_response = client.post("/api/v1/tasks", json=create_data)
         assert create_response.status_code == status.HTTP_201_CREATED
 
         task_data = create_response.json()
@@ -35,7 +35,7 @@ class TestTaskLifecycleIntegration:
         assert "updated_at" in task_data
 
         # 2. Read the task back
-        get_response = client.get(f"/tasks/{task_id}")
+        get_response = client.get(f"/api/v1/tasks/{task_id}")
         assert get_response.status_code == status.HTTP_200_OK
 
         retrieved_task = get_response.json()
@@ -49,7 +49,7 @@ class TestTaskLifecycleIntegration:
             "description": "Updated description",
         }
 
-        update_response = client.put(f"/tasks/{task_id}", json=update_data)
+        update_response = client.put(f"/api/v1/tasks/{task_id}", json=update_data)
         assert update_response.status_code == status.HTTP_200_OK
 
         updated_task = update_response.json()
@@ -59,7 +59,7 @@ class TestTaskLifecycleIntegration:
 
         # 4. Mark as completed
         complete_data = {"status": "done"}
-        complete_response = client.put(f"/tasks/{task_id}", json=complete_data)
+        complete_response = client.put(f"/api/v1/tasks/{task_id}", json=complete_data)
         assert complete_response.status_code == status.HTTP_200_OK
 
         completed_task = complete_response.json()
@@ -67,7 +67,7 @@ class TestTaskLifecycleIntegration:
         assert completed_task["completed_at"] is not None
 
         # 5. Archive the task
-        archive_response = client.delete(f"/tasks/{task_id}")
+        archive_response = client.delete(f"/api/v1/tasks/{task_id}")
         assert archive_response.status_code == status.HTTP_200_OK
 
         archived_task = archive_response.json()
@@ -75,7 +75,7 @@ class TestTaskLifecycleIntegration:
 
         # 6. Verify archived task can't be updated
         final_update_data = {"title": "Should Fail"}
-        final_update_response = client.put(f"/tasks/{task_id}", json=final_update_data)
+        final_update_response = client.put(f"/api/v1/tasks/{task_id}", json=final_update_data)
         assert final_update_response.status_code == status.HTTP_409_CONFLICT
 
 
@@ -119,7 +119,7 @@ class TestTaskFilteringIntegration:
         # Create all tasks
         created_tasks = []
         for task_data in tasks_data:
-            response = client.post("/tasks", json=task_data)
+            response = client.post("/api/v1/tasks", json=task_data)
             assert response.status_code == status.HTTP_201_CREATED
             created_tasks.append(response.json())
 
@@ -161,7 +161,7 @@ class TestTaskConcurrencyIntegration:
     def test_concurrent_task_operations(self, client):
         """Test that multiple operations work correctly together."""
         # Create initial task
-        create_response = client.post("/tasks", json={"title": "Concurrency Test"})
+        create_response = client.post("/api/v1/tasks", json={"title": "Concurrency Test"})
         assert create_response.status_code == status.HTTP_201_CREATED
         task_id = create_response.json()["id"]
 
@@ -173,11 +173,11 @@ class TestTaskConcurrencyIntegration:
         ]
 
         for op_data in operations:
-            response = client.put(f"/tasks/{task_id}", json=op_data)
+            response = client.put(f"/api/v1/tasks/{task_id}", json=op_data)
             assert response.status_code == status.HTTP_200_OK
 
         # Verify final state
-        final_response = client.get(f"/tasks/{task_id}")
+        final_response = client.get(f"/api/v1/tasks/{task_id}")
         assert final_response.status_code == status.HTTP_200_OK
         final_task = final_response.json()
 
@@ -205,7 +205,7 @@ class TestDataPersistenceIntegration:
         }
 
         # Create task
-        create_response = client.post("/tasks", json=complex_task)
+        create_response = client.post("/api/v1/tasks", json=complex_task)
         assert create_response.status_code == status.HTTP_201_CREATED
         created_task = create_response.json()
 
@@ -215,7 +215,7 @@ class TestDataPersistenceIntegration:
 
         # Retrieve task separately
         task_id = created_task["id"]
-        get_response = client.get(f"/tasks/{task_id}")
+        get_response = client.get(f"/api/v1/tasks/{task_id}")
         assert get_response.status_code == status.HTTP_200_OK
         retrieved_task = get_response.json()
 

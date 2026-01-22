@@ -12,7 +12,7 @@ class TestHealthEndpoint:
 
     def test_health_check_success(self, client):
         """Test successful health check."""
-        response = client.get("/health")
+        response = client.get("/api/v1/health")
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -24,7 +24,7 @@ class TestHealthEndpoint:
 
     def test_health_check_response_format(self, client):
         """Test health response format matches schema."""
-        response = client.get("/health")
+        response = client.get("/api/v1/health")
 
         data = response.json()
         required_fields = ["status", "version", "database", "timestamp"]
@@ -40,7 +40,7 @@ class TestCreateTaskEndpoint:
         """Test creating a task with minimal data."""
         task_data = {"title": "New Task"}
 
-        response = client.post("/tasks", json=task_data)
+        response = client.post("/api/v1/tasks", json=task_data)
 
         assert response.status_code == status.HTTP_201_CREATED
         data = response.json()
@@ -66,7 +66,7 @@ class TestCreateTaskEndpoint:
             "workspace": "Project Alpha",
         }
 
-        response = client.post("/tasks", json=task_data)
+        response = client.post("/api/v1/tasks", json=task_data)
 
         assert response.status_code == status.HTTP_201_CREATED
         data = response.json()
@@ -84,7 +84,7 @@ class TestCreateTaskEndpoint:
         # Empty title
         task_data = {"title": ""}
 
-        response = client.post("/tasks", json=task_data)
+        response = client.post("/api/v1/tasks", json=task_data)
 
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
         data = response.json()
@@ -94,7 +94,7 @@ class TestCreateTaskEndpoint:
         """Test task creation with invalid status."""
         task_data = {"title": "Test Task", "status": "invalid"}
 
-        response = client.post("/tasks", json=task_data)
+        response = client.post("/api/v1/tasks", json=task_data)
 
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
@@ -102,7 +102,7 @@ class TestCreateTaskEndpoint:
         """Test task creation with invalid priority."""
         task_data = {"title": "Test Task", "priority": "invalid"}
 
-        response = client.post("/tasks", json=task_data)
+        response = client.post("/api/v1/tasks", json=task_data)
 
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
@@ -110,7 +110,7 @@ class TestCreateTaskEndpoint:
         """Test task creation with invalid context."""
         task_data = {"title": "Test Task", "context": "invalid"}
 
-        response = client.post("/tasks", json=task_data)
+        response = client.post("/api/v1/tasks", json=task_data)
 
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
@@ -118,7 +118,7 @@ class TestCreateTaskEndpoint:
         """Test task creation with empty tags."""
         task_data = {"title": "Test Task", "tags": [""]}
 
-        response = client.post("/tasks", json=task_data)
+        response = client.post("/api/v1/tasks", json=task_data)
 
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
@@ -128,7 +128,7 @@ class TestGetTaskEndpoint:
 
     def test_get_task_success(self, client, sample_task):
         """Test successfully getting a task."""
-        response = client.get(f"/tasks/{sample_task.id}")
+        response = client.get(f"/api/v1/tasks/{sample_task.id}")
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -141,7 +141,7 @@ class TestGetTaskEndpoint:
         """Test getting a non-existent task."""
         fake_id = "12345678-1234-5678-9012-123456789012"
 
-        response = client.get(f"/tasks/{fake_id}")
+        response = client.get(f"/api/v1/tasks/{fake_id}")
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
         data = response.json()
@@ -165,7 +165,7 @@ class TestUpdateTaskEndpoint:
             "priority": "high",
         }
 
-        response = client.put(f"/tasks/{sample_task.id}", json=update_data)
+        response = client.put(f"/api/v1/tasks/{sample_task.id}", json=update_data)
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -178,7 +178,7 @@ class TestUpdateTaskEndpoint:
         """Test partial task update."""
         update_data = {"title": "Partially Updated"}
 
-        response = client.put(f"/tasks/{sample_task.id}", json=update_data)
+        response = client.put(f"/api/v1/tasks/{sample_task.id}", json=update_data)
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -193,7 +193,7 @@ class TestUpdateTaskEndpoint:
         """Test that updating status to done sets completion timestamp."""
         update_data = {"status": "done"}
 
-        response = client.put(f"/tasks/{sample_task.id}", json=update_data)
+        response = client.put(f"/api/v1/tasks/{sample_task.id}", json=update_data)
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -205,7 +205,7 @@ class TestUpdateTaskEndpoint:
         """Test that updating status from done clears completion timestamp."""
         update_data = {"status": "todo"}
 
-        response = client.put(f"/tasks/{completed_task.id}", json=update_data)
+        response = client.put(f"/api/v1/tasks/{completed_task.id}", json=update_data)
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -218,7 +218,7 @@ class TestUpdateTaskEndpoint:
         fake_id = "12345678-1234-5678-9012-123456789012"
         update_data = {"title": "Updated"}
 
-        response = client.put(f"/tasks/{fake_id}", json=update_data)
+        response = client.put(f"/api/v1/tasks/{fake_id}", json=update_data)
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
@@ -226,7 +226,7 @@ class TestUpdateTaskEndpoint:
         """Test that updating an archived task fails."""
         update_data = {"title": "Should Fail"}
 
-        response = client.put(f"/tasks/{archived_task.id}", json=update_data)
+        response = client.put(f"/api/v1/tasks/{archived_task.id}", json=update_data)
 
         assert response.status_code == status.HTTP_409_CONFLICT
         data = response.json()
@@ -236,7 +236,7 @@ class TestUpdateTaskEndpoint:
         """Test update with validation errors."""
         update_data = {"title": ""}  # Empty title
 
-        response = client.put(f"/tasks/{sample_task.id}", json=update_data)
+        response = client.put(f"/api/v1/tasks/{sample_task.id}", json=update_data)
 
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
@@ -246,7 +246,7 @@ class TestDeleteTaskEndpoint:
 
     def test_archive_task_success(self, client, sample_task):
         """Test successfully archiving a task."""
-        response = client.delete(f"/tasks/{sample_task.id}")
+        response = client.delete(f"/api/v1/tasks/{sample_task.id}")
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -257,13 +257,13 @@ class TestDeleteTaskEndpoint:
         """Test archiving a non-existent task."""
         fake_id = "12345678-1234-5678-9012-123456789012"
 
-        response = client.delete(f"/tasks/{fake_id}")
+        response = client.delete(f"/api/v1/tasks/{fake_id}")
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
     def test_archive_already_archived_task_fails(self, client, archived_task):
         """Test that archiving an already archived task fails."""
-        response = client.delete(f"/tasks/{archived_task.id}")
+        response = client.delete(f"/api/v1/tasks/{archived_task.id}")
 
         assert response.status_code == status.HTTP_409_CONFLICT
         data = response.json()
@@ -275,7 +275,7 @@ class TestListTasksEndpoint:
 
     def test_list_tasks_empty(self, client):
         """Test listing tasks when none exist."""
-        response = client.get("/tasks")
+        response = client.get("/api/v1/tasks")
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -286,7 +286,7 @@ class TestListTasksEndpoint:
 
     def test_list_tasks_with_data(self, client, sample_task):
         """Test listing tasks with data."""
-        response = client.get("/tasks")
+        response = client.get("/api/v1/tasks")
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -299,7 +299,7 @@ class TestListTasksEndpoint:
         """Test filtering tasks by status."""
         # Create another task with different status
         task_data = {"title": "Done Task", "status": "done"}
-        client.post("/tasks", json=task_data)
+        client.post("/api/v1/tasks", json=task_data)
 
         # Filter by todo status
         response = client.get("/tasks?status=todo")
@@ -323,7 +323,7 @@ class TestListTasksEndpoint:
         """Test filtering tasks by context."""
         # Create task with different context
         task_data = {"title": "Work Task", "context": "professional"}
-        client.post("/tasks", json=task_data)
+        client.post("/api/v1/tasks", json=task_data)
 
         # Filter by personal context
         response = client.get("/tasks?context=personal")
@@ -338,7 +338,7 @@ class TestListTasksEndpoint:
         """Test filtering tasks by minimum priority."""
         # Create high priority task
         task_data = {"title": "High Priority", "priority": "high"}
-        client.post("/tasks", json=task_data)
+        client.post("/api/v1/tasks", json=task_data)
 
         # Filter by medium+ priority (should include high)
         response = client.get("/tasks?priority=medium")
@@ -354,7 +354,7 @@ class TestListTasksEndpoint:
         # Create multiple tasks
         for i in range(5):
             task_data = {"title": f"Task {i}"}
-            client.post("/tasks", json=task_data)
+            client.post("/api/v1/tasks", json=task_data)
 
         # Request limited results
         response = client.get("/tasks?limit=3")
@@ -372,8 +372,8 @@ class TestListTasksEndpoint:
         task1 = {"title": "Task 1"}
         task2 = {"title": "Task 2"}
 
-        client.post("/tasks", json=task1)
-        client.post("/tasks", json=task2)
+        client.post("/api/v1/tasks", json=task1)
+        client.post("/api/v1/tasks", json=task2)
 
         # Sort by title ascending
         response = client.get("/tasks?sort=title&order=asc")
