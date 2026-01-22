@@ -76,6 +76,7 @@ cat prompts/$(ls prompts/ | grep $(cat docs/ROADMAP.md | grep "Phase.*In Progres
 - **Python 3.9+** - Backend runtime
 - **Node.js 16+** - Frontend development
 - **Git** - Version control
+- **aiosqlite** - Async SQLite driver (installed automatically)
 
 ### Installation & Setup
 
