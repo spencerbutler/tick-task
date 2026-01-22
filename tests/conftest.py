@@ -12,7 +12,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from fin_tasks.config import settings
-from fin_tasks.database import Base, get_db
+from fin_tasks.database import get_db
+from fin_tasks.models import Base
 from fin_tasks.main import app
 from fin_tasks.models import Task
 
