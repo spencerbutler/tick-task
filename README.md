@@ -9,6 +9,39 @@
 >
 > A local-first task tracking application with a stable API for ecosystem integration. Zero external dependencies, full offline capability, and comprehensive security.
 
+## 🤖 Quick Agent Bootstrap
+**For AI Models & Agents - Get productive in 5 minutes:**
+
+### 📚 **Immediate Context**
+1. **📖 [SPEC.md](docs/SPEC.md)** - Complete requirements & acceptance criteria
+2. **🛣️ [ROADMAP.md](docs/ROADMAP.md)** - Current status & implementation phases
+3. **📝 [prompts/](prompts/)** - 18 complete implementation prompts (00-17)
+
+### 🎯 **Fastest Start**
+```bash
+# 1. Read the current phase status
+cat docs/ROADMAP.md | grep -A 5 "Phase.*COMPLETED\|Phase.*In Progress"
+
+# 2. Check available prompts
+ls prompts/ | head -10
+
+# 3. Read the relevant prompt for current work
+cat prompts/$(ls prompts/ | grep $(cat docs/ROADMAP.md | grep "Phase.*In Progress" | sed 's/.*Phase \([0-9]\).*/\1/') | head -1)
+```
+
+### 📋 **Development Workflow**
+- **📖 Read docs first** - All decisions documented with rationale
+- **📝 Follow prompts** - Step-by-step implementation guides
+- **🧪 Test thoroughly** - 65%+ coverage required
+- **📝 Document decisions** - Use ADR template for major changes
+- **🔄 Manual review** - PRs require human approval
+
+### 🎪 **Key Features**
+- **Complete context** without session history dependency
+- **Decision rationale** for all architectural choices
+- **Step-by-step guides** for consistent implementation
+- **Quality gates** ensure production readiness
+
 ## ✨ Features
 
 ### 🎯 **Core Functionality**
