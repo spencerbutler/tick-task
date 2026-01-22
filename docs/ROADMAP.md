@@ -260,22 +260,34 @@ docs: Update testing strategy with coverage targets
 ### Git Automation - No Manual Interventions
 **Eliminate vim prompts, pager blocking, and manual confirmations for automated workflows:**
 
-**Configuration:**
-```bash
-# Set git to not open editor for automation
-git config --global core.editor "true"
-git config --global merge.ff false
+**Safe Alternatives (No Global Config):**
 
-# Environment variable for CI/CD
-export GIT_EDITOR="true"
+**Environment Variables (Per-Session):**
+```bash
+# Safe - only affects current shell session
+export GIT_EDITOR=true
+git merge --no-edit origin/main
+```
+
+**Command Flags (Explicit):**
+```bash
+# Safe - explicit flags prevent editors
+git merge --no-edit origin/main
+git cherry-pick --no-edit <commit>
+git rebase --continue  # (with GIT_EDITOR=true)
+```
+
+**Local Repo Config (Optional):**
+```bash
+# Only if user explicitly requests it for this repo
+git config --local core.editor "true"
 ```
 
 **Terminal Output Handling:**
 - ✅ Prevent interactive prompts that require manual intervention (vim, less, etc.)
-- ✅ Configure git to avoid editor prompts: `git config --global core.editor "true"`
 - ✅ Use `--no-edit` flags for automated operations
-- ✅ Handle pager output automatically to prevent blocking
 - ✅ Environment variables for CI/CD: `export GIT_EDITOR="true"`
+- ✅ **Never modify user dotfiles without permission**
 
 **Automated Commands:**
 ```bash
@@ -381,11 +393,79 @@ python test_api.py    # API tests pass
 - Check `.env` files for configuration problems
 - Verify port availability (7000 backend, 5173 frontend)
 
-## Project Invariants
-- Local-first deployment with zero external dependencies
-- SQLite for data persistence
-- FastAPI for backend API
-- React/TypeScript for frontend UI
-- Comprehensive testing (unit, integration, E2E)
-- GitHub-first development workflow
-- Template-based PR creation for complex changes
+
+## Portability Architecture
+
+### Model/Agent Independence
+**Requirements:** Project must be continuable by any AI model/agent without external session dependencies.
+
+#### Complete Documentation
+- ✅ **Prompt Library**: All 18 implementation prompts (00-17) with step-by-step instructions
+- ✅ **Decision Records**: Architecture decisions documented with rationale, alternatives, trade-offs
+- ✅ **Session Independence**: No reliance on external conversation history or session state
+- ✅ **Context Reconstruction**: Git log + documentation provides complete project understanding
+
+#### Decision Documentation Framework
+**For each major implementation decision:**
+
+```markdown
+## Implementation Decision: [Decision Title]
+
+**Date:** YYYY-MM-DD
+**Context:** What problem were we solving?
+**Options Considered:**
+- Option 1: Description, pros/cons
+- Option 2: Description, pros/cons
+- Option 3: Description, pros/cons
+
+**Chosen Solution:** Why this approach?
+**Trade-offs:** What we gained/lost
+**Future Considerations:** When to revisit this decision
+```
+
+#### Git Workflow for Portability
+**Enhanced commit messages:**
+```bash
+# Instead of: "feat: add new feature"
+feat: add markdown support for task descriptions
+
+Context: Users requested rich text formatting in task descriptions
+Decision: React-markdown with skipHtml=true for security
+Alternatives: Plain text (too limited), HTML (security risk)
+Trade-offs: Bundle size vs functionality (chose functionality with security)
+```
+
+**Benefits:**
+- ✅ Any model/agent can understand implementation rationale
+- ✅ No dependency on session history or external context
+- ✅ Decisions are traceable and revisitable
+- ✅ Future maintainers have complete context
+
+#### Architecture Decision Records (ADRs)
+**Template for major architectural decisions:**
+
+```markdown
+# ADR 001: Synchronous vs Async Database Operations
+
+## Status
+Accepted
+
+## Context
+Need to choose between sync and async database operations for testing and simplicity.
+
+## Decision
+Use synchronous SQLAlchemy operations.
+
+## Consequences
+- ✅ Simpler testing infrastructure
+- ✅ Reduced complexity for maintenance
+- ⚠️ Potential performance limitations at scale
+- ✅ Easier debugging and development
+
+## Alternatives Considered
+- Async SQLAlchemy: Better performance but complex testing
+- Raw SQL: Maximum performance but security/maintenance issues
+
+## Future Considerations
+Revisit when user base exceeds 10k concurrent operations.
+```
