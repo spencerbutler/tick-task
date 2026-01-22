@@ -1,10 +1,13 @@
 """Pytest configuration and fixtures for FIN-tasks tests."""
 
+"""Pytest configuration and fixtures for FIN-tasks tests."""
+
 import asyncio
 import os
 from typing import AsyncGenerator, Generator
 
 import pytest
+import pytest_asyncio
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
@@ -18,15 +21,7 @@ from fin_tasks.main import app
 from fin_tasks.models import Task
 
 
-@pytest.fixture(scope="session")
-def event_loop() -> Generator[asyncio.AbstractEventLoop, None, None]:
-    """Create an instance of the default event loop for the test session."""
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
-
-
-@pytest.fixture(scope="session")
+@pytest_asyncio.fixture(scope="session")
 async def test_engine():
     """Create test database engine with in-memory SQLite."""
     # Use in-memory SQLite for tests
@@ -49,7 +44,7 @@ async def test_engine():
     await engine.dispose()
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def db_session(test_engine) -> AsyncGenerator[AsyncSession, None]:
     """Create database session for tests."""
     # Create session
@@ -84,7 +79,7 @@ def client(db_session) -> Generator[TestClient, None, None]:
     app.dependency_overrides.clear()
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def sample_task(db_session) -> Task:
     """Create a sample task for testing."""
     task = Task(
@@ -103,7 +98,7 @@ async def sample_task(db_session) -> Task:
     return task
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def completed_task(db_session) -> Task:
     """Create a completed task for testing."""
     from datetime import datetime
@@ -125,7 +120,7 @@ async def completed_task(db_session) -> Task:
     return task
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def archived_task(db_session) -> Task:
     """Create an archived task for testing."""
     task = Task(
