@@ -327,17 +327,24 @@ git cherry-pick --continue
 - Docker build successful
 
 ### Code Review Guidelines
+**Manual Review Process:**
+- ✅ **AI Development**: Feature implementation and initial testing
+- ✅ **Manual Code Review**: Human review of code quality, logic, and implementation
+- ✅ **Manual Merge**: Human approval and merge to main branch
+- ✅ **Test Verification**: CI status monitored and approved before merge
+
 **Review Checklist:**
 - [ ] CI pipeline passes all jobs
-- [ ] Test coverage maintained or improved
+- [ ] Test coverage meets current thresholds (65% minimum)
 - [ ] Breaking changes documented
 - [ ] Database migrations included if needed
 - [ ] Documentation updated
 - [ ] Security implications reviewed
+- [ ] User experience validated
 
 **Approval Requirements:**
-- 1 reviewer required for feature branches
-- 2 reviewers required for main branch merges
+- 1 reviewer required for feature branches (manual review)
+- Manual approval required for main branch merges
 - Code owner approval for architectural changes
 - QA approval for UI/UX changes
 
