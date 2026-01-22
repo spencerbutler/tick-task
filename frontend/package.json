@@ -42,6 +42,7 @@
     "vite": "^5.0.0",
     "vitest": "^1.0.4",
     "@vitest/ui": "^1.0.4",
+    "@vitest/coverage-v8": "^1.0.4",
     "axe-core": "^4.8.2",
     "jest-axe": "^8.0.0"
   },
