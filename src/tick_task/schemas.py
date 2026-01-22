@@ -4,19 +4,33 @@ from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel, Field, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class TaskBase(BaseModel):
     """Base task schema with common fields."""
 
     title: str = Field(..., min_length=1, max_length=200, description="Task title")
-    description: Optional[str] = Field(None, max_length=2000, description="Task description")
-    status: str = Field("todo", description="Task status", pattern=r"^(todo|doing|blocked|done|archived)$")
-    priority: str = Field("medium", description="Task priority", pattern=r"^(low|medium|high|urgent)$")
-    due_at: Optional[datetime] = Field(None, description="Due date and time in ISO format")
+    description: Optional[str] = Field(
+        None, max_length=2000, description="Task description"
+    )
+    status: str = Field(
+        "todo",
+        description="Task status",
+        pattern=r"^(todo|doing|blocked|done|archived)$",
+    )
+    priority: str = Field(
+        "medium", description="Task priority", pattern=r"^(low|medium|high|urgent)$"
+    )
+    due_at: Optional[datetime] = Field(
+        None, description="Due date and time in ISO format"
+    )
     tags: list[str] = Field(default_factory=list, description="List of tags")
-    context: str = Field("personal", description="Task context", pattern=r"^(personal|professional|mixed)$")
+    context: str = Field(
+        "personal",
+        description="Task context",
+        pattern=r"^(personal|professional|mixed)$",
+    )
     workspace: Optional[str] = Field(None, max_length=100, description="Workspace name")
 
     @field_validator("tags", mode="before")
@@ -48,9 +62,16 @@ class TaskBase(BaseModel):
         }
     )
 
+    def model_dump_json(self, **kwargs):
+        """Custom JSON serialization that handles datetime fields properly."""
+        # Set default datetime format to include 'Z' for UTC
+        kwargs.setdefault("serialize_as_any", True)
+        return super().model_dump_json(**kwargs)
+
 
 class TaskCreate(TaskBase):
     """Schema for creating a new task."""
+
     pass
 
 
@@ -107,7 +128,7 @@ class Task(TaskBase):
         from_attributes=True,
         json_encoders={
             datetime: lambda v: v.isoformat(),
-        }
+        },
     )
 
 

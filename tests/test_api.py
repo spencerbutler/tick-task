@@ -150,7 +150,7 @@ class TestGetTaskEndpoint:
 
     def test_get_task_invalid_uuid(self, client):
         """Test getting a task with invalid UUID."""
-        response = client.get("/tasks/invalid-uuid")
+        response = client.get("/api/v1/tasks/invalid-uuid")
 
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
@@ -303,7 +303,7 @@ class TestListTasksEndpoint:
         client.post("/api/v1/tasks", json=task_data)
 
         # Filter by todo status
-        response = client.get("/tasks?status=todo")
+        response = client.get("/api/v1/tasks?status=todo")
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -312,7 +312,7 @@ class TestListTasksEndpoint:
         assert data["tasks"][0]["status"] == "todo"
 
         # Filter by done status
-        response = client.get("/tasks?status=done")
+        response = client.get("/api/v1/tasks?status=done")
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -327,7 +327,7 @@ class TestListTasksEndpoint:
         client.post("/api/v1/tasks", json=task_data)
 
         # Filter by personal context
-        response = client.get("/tasks?context=personal")
+        response = client.get("/api/v1/tasks?context=personal")
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -341,14 +341,16 @@ class TestListTasksEndpoint:
         task_data = {"title": "High Priority", "priority": "high"}
         client.post("/api/v1/tasks", json=task_data)
 
-        # Filter by medium+ priority (should include high)
-        response = client.get("/tasks?priority=medium")
+        # Filter by medium+ priority (should include medium and high)
+        response = client.get("/api/v1/tasks?priority=medium")
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
 
-        assert len(data["tasks"]) == 1
-        assert data["tasks"][0]["priority"] == "high"
+        assert len(data["tasks"]) == 2  # sample_task (medium) + high priority task
+        priorities = [task["priority"] for task in data["tasks"]]
+        assert "medium" in priorities
+        assert "high" in priorities
 
     def test_list_tasks_pagination(self, client):
         """Test task list pagination."""
@@ -358,7 +360,7 @@ class TestListTasksEndpoint:
             client.post("/api/v1/tasks", json=task_data)
 
         # Request limited results
-        response = client.get("/tasks?limit=3")
+        response = client.get("/api/v1/tasks?limit=3")
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -377,7 +379,7 @@ class TestListTasksEndpoint:
         client.post("/api/v1/tasks", json=task2)
 
         # Sort by title ascending
-        response = client.get("/tasks?sort=title&order=asc")
+        response = client.get("/api/v1/tasks?sort=title&order=asc")
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -389,7 +391,7 @@ class TestListTasksEndpoint:
         """Test filtering by updated_since."""
         # Use a future date (should return no results)
         future_date = "2030-01-01T00:00:00Z"
-        response = client.get(f"/tasks?updated_since={future_date}")
+        response = client.get(f"/api/v1/tasks?updated_since={future_date}")
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()

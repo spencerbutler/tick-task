@@ -14,7 +14,7 @@ class TestDatabaseConnection:
     async def test_database_connection(self, db_session):
         """Test that database connection works."""
         # Execute a simple query to test connection
-        result = await db_session.execute("SELECT 1 as test")
+        result = await db_session.execute(text("SELECT 1 as test"))
         row = result.first()
 
         assert row is not None
@@ -28,7 +28,7 @@ class TestDatabaseConnection:
         """Test that database tables are created."""
         # Check if tasks table exists by trying to query it
         result = await db_session.execute(
-            "SELECT name FROM sqlite_master WHERE type='table' AND name='tasks'"
+            text("SELECT name FROM sqlite_master WHERE type='table' AND name='tasks'")
         )
         table = result.first()
 
