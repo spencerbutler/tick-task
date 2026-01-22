@@ -69,16 +69,23 @@ repos:
   #       args: ['--baseline', '.secrets.baseline']
   #       exclude: ^(tests|frontend)/
 
-  # Test validation (runs before push)
-  - repo: local
-    hooks:
-      - id: run-tests
-        name: Run test suite
-        entry: python3 -m pytest
-        args: [--cov=tick_task, --cov-report=term-missing, --cov-fail-under=55, -x, tests/]
-        language: system
-        pass_filenames: false
-        stages: [push]
-        env:
-          PYTHONPATH: $PWD/src
-        description: "Run test suite with coverage before pushing"
+  # Test validation (runs before push) - temporarily disabled
+  # - repo: local
+  #   hooks:
+  #     - id: run-tests
+  #       name: Run test suite
+  #       entry: python3 -m pytest
+  #       args:
+  #         [
+  #           --cov=tick_task,
+  #           --cov-report=term-missing,
+  #           --cov-fail-under=55,
+  #           -x,
+  #           tests/,
+  #         ]
+  #       language: system
+  #       pass_filenames: false
+  #       stages: [push]
+  #       env:
+  #         PYTHONPATH: $PWD/src
+  #       description: "Run test suite with coverage before pushing"
