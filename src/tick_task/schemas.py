@@ -24,13 +24,14 @@ class TaskBase(BaseModel):
     def validate_tag(cls, v):
         """Validate individual tag constraints."""
         if isinstance(v, list):
+            validated_tags = []
             for tag in v:
                 if len(tag) > 50:
                     raise ValueError("Tag must be 50 characters or less")
                 if not tag.strip():
                     raise ValueError("Tag cannot be empty or whitespace-only")
-                tag = tag.strip().lower()
-            return v
+                validated_tags.append(tag.strip().lower())
+            return validated_tags
         return v
 
     @field_validator("title")
