@@ -1,7 +1,7 @@
 # Agent Prompt 17 — Deployment Packaging
 
 ## Objective
-Design local-first deployment and packaging strategy for FIN-tasks application.
+Design local-first deployment and packaging strategy for tick-task application.
 
 ## Local-First Deployment Principles
 - **Zero external dependencies** for core functionality

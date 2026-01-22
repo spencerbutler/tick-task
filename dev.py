@@ -106,7 +106,7 @@ class DevServer:
             env["PYTHONPATH"] = str(self.project_root / "src")
 
             self.backend_process = subprocess.Popen(
-                [sys.executable, "-m", "fin_tasks.main"],
+                [sys.executable, "-m", "tick_task.main"],
                 env=env,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,

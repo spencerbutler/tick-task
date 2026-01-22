@@ -3,8 +3,8 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from fin_tasks.database import get_db
-from fin_tasks.models import Base, Task
+from tick_task.database import get_db
+from tick_task.models import Base, Task
 
 
 class TestDatabaseConnection:

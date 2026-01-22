@@ -3,7 +3,7 @@
 ## AI-Orchestrated Development Efficiency Study
 
 ### Executive Summary
-This document analyzes the time efficiency of AI-orchestrated software development compared to traditional human team development approaches. The FIN-tasks project serves as a case study demonstrating the productivity gains possible through coordinated AI development.
+This document analyzes the time efficiency of AI-orchestrated software development compared to traditional human team development approaches. The tick-task project serves as a case study demonstrating the productivity gains possible through coordinated AI development.
 
 ### Methodology
 - **Time Tracking**: Git commit history analysis with detailed commit messages
@@ -13,7 +13,7 @@ This document analyzes the time efficiency of AI-orchestrated software developme
 
 ## Project Scope Analysis
 
-### FIN-tasks Project Overview
+### tick-task Project Overview
 - **Domain**: Task management application with local-first architecture
 - **Technology Stack**: React/TypeScript frontend, FastAPI/Python backend, SQLite database
 - **Features**: CRUD operations, inline editing, markdown support, comprehensive security

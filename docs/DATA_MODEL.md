@@ -1,7 +1,7 @@
-# FIN-tasks Data Model (v1.0)
+# tick-task Data Model (v1.0)
 
 ## Overview
-The FIN-tasks data model centers around a single `Task` entity that captures all task-related information. The model is designed for local-first usage with SQLite as the persistence layer, emphasizing data integrity, query performance, and export capability.
+The tick-task data model centers around a single `Task` entity that captures all task-related information. The model is designed for local-first usage with SQLite as the persistence layer, emphasizing data integrity, query performance, and export capability.
 
 ## Task Entity Schema
 
@@ -295,4 +295,4 @@ id TEXT PRIMARY KEY CHECK (length(id) = 36 AND id GLOB '[0-9a-f][0-9a-f][0-9a-f]
 - Easy to query with JSON_EXTRACT
 - Maintains data locality
 
-This data model provides a solid foundation for FIN-tasks v1.0 while maintaining flexibility for future enhancements.
+This data model provides a solid foundation for tick-task v1.0 while maintaining flexibility for future enhancements.

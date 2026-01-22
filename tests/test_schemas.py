@@ -4,7 +4,7 @@ import pytest
 from datetime import datetime
 from pydantic import ValidationError
 
-from fin_tasks.schemas import (
+from tick_task.schemas import (
     TaskCreate,
     TaskUpdate,
     Task,

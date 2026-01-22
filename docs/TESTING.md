@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the comprehensive testing strategy for the FIN-tasks application, covering unit tests, integration tests, end-to-end tests, and quality assurance processes.
+This document outlines the comprehensive testing strategy for the tick-task application, covering unit tests, integration tests, end-to-end tests, and quality assurance processes.
 
 ## Testing Pyramid
 

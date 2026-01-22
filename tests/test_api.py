@@ -4,7 +4,7 @@ import pytest
 from datetime import datetime
 from fastapi import status
 
-from fin_tasks.schemas import TaskCreate, TaskUpdate
+from tick_task.schemas import TaskCreate, TaskUpdate
 
 
 class TestHealthEndpoint:

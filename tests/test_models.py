@@ -4,7 +4,7 @@ import pytest
 from datetime import datetime
 from uuid import UUID
 
-from fin_tasks.models import Task
+from tick_task.models import Task
 
 
 class TestTaskModel:

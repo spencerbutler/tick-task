@@ -4,7 +4,7 @@
 Accepted
 
 ## Context
-Need to choose between synchronous and asynchronous database operations for the FIN-tasks application. This decision impacts testing complexity, development velocity, and future scalability.
+Need to choose between synchronous and asynchronous database operations for the tick-task application. This decision impacts testing complexity, development velocity, and future scalability.
 
 ## Decision
 Use synchronous SQLAlchemy operations for all database interactions.

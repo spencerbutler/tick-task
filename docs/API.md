@@ -1,7 +1,7 @@
-# FIN-tasks Local API (v1.0)
+# tick-task Local API (v1.0)
 
 ## Overview
-The FIN-tasks API provides a RESTful interface for task management operations. The API is designed for local-first usage with optional LAN access, supporting full CRUD operations, advanced querying, and data export functionality.
+The tick-task API provides a RESTful interface for task management operations. The API is designed for local-first usage with optional LAN access, supporting full CRUD operations, advanced querying, and data export functionality.
 
 ## Base URL and Versioning
 - **Base URL**: `http://127.0.0.1:8000/api/v1` (default localhost)

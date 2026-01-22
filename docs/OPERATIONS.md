@@ -94,8 +94,8 @@
 ### Data Management
 - **User Data Directory**: Platform-specific locations
   - Linux: `~/.fin-tasks/`
-  - macOS: `~/Library/Application Support/FIN-tasks/`
-  - Windows: `%APPDATA%\FIN-tasks\`
+  - macOS: `~/Library/Application Support/tick-task/`
+  - Windows: `%APPDATA%\tick-task\`
 - **Database**: SQLite file with WAL mode enabled
 - **Configuration**: JSON file with schema validation
 - **Logs**: Rotating log files with configurable retention

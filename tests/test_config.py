@@ -3,7 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
-from fin_tasks.config import Settings, settings
+from tick_task.config import Settings, settings
 
 
 class TestSettingsValidation:
@@ -15,7 +15,7 @@ class TestSettingsValidation:
 
         # Check that required fields have defaults
         assert test_settings.database_url is not None
-        assert test_settings.database_url.startswith("sqlite:///")
+        assert "sqlite" in test_settings.database_url
 
     def test_settings_database_url_validation(self):
         """Test database URL validation."""

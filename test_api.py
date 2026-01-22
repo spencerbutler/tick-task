@@ -12,7 +12,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 from fastapi.testclient import TestClient
-from fin_tasks.main import create_application
+from tick_task.main import create_application
 
 def test_api():
     """Test API endpoints using TestClient."""

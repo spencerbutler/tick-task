@@ -1,7 +1,7 @@
 # SPEC (v1.0 - Implementation Ready)
 
 ## Product Statement
-FIN-tasks is a local-first task tracking application supporting personal and professional workflows, with a stable local API for interoperation with other local apps in the FIN ecosystem.
+tick-task is a local-first task tracking application supporting personal and professional workflows, with a stable local API for interoperation with other local apps in the FIN ecosystem.
 
 ## Vision
 A beautiful, reliable task management tool that works offline-first, ensuring users never lose their data while providing powerful organization capabilities for both personal and professional contexts.

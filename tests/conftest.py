@@ -1,4 +1,4 @@
-"""Pytest configuration and fixtures for FIN-tasks tests."""
+"""Pytest configuration and fixtures for tick-task tests."""
 
 import asyncio
 import os
@@ -11,11 +11,11 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
-from fin_tasks.config import settings
-from fin_tasks.database import get_db
-from fin_tasks.models import Base
-from fin_tasks.main import app
-from fin_tasks.models import Task
+from tick_task.config import settings
+from tick_task.database import get_db
+from tick_task.models import Base
+from tick_task.main import app
+from tick_task.models import Task
 
 
 @pytest.fixture(scope="session")

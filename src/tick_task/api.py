@@ -7,10 +7,10 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from fin_tasks.config import settings
-from fin_tasks.database import get_db
-from fin_tasks.models import Task
-from fin_tasks.schemas import (
+from tick_task.config import settings
+from tick_task.database import get_db
+from tick_task.models import Task
+from tick_task.schemas import (
     ErrorResponse,
     HealthResponse,
     Task as TaskSchema,

@@ -1,4 +1,4 @@
-# FIN-tasks Development Setup
+# tick-task Development Setup
 
 ## Quick Start
 

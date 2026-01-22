@@ -6,9 +6,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from fastapi.responses import RedirectResponse
 
-from fin_tasks.api import router as api_router
-from fin_tasks.config import settings
-from fin_tasks.database import create_tables
+from tick_task.api import router as api_router
+from tick_task.config import settings
+from tick_task.database import create_tables
 
 
 def create_application() -> FastAPI:
@@ -49,7 +49,7 @@ app = create_application()
 def main():
     """Run the application with uvicorn."""
     uvicorn.run(
-        "fin_tasks.main:app",
+        "tick_task.main:app",
         host=settings.host,
         port=settings.port,
         reload=settings.debug,

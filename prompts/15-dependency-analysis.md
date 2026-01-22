@@ -1,7 +1,7 @@
 # Agent Prompt 15 — Dependency Analysis
 
 ## Objective
-Analyze and justify all third-party dependencies for the FIN-tasks application.
+Analyze and justify all third-party dependencies for the tick-task application.
 
 ## Core Dependencies Assessment
 

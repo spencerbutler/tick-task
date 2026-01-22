@@ -6,7 +6,7 @@ Record design choices that trade off simplicity vs capability.
 
 ### Date: 2026-01-21
 **Decision**: Use Python FastAPI backend with React TypeScript frontend and SQLite persistence
-**Context**: Choosing the complete technology stack for FIN-tasks v1.0
+**Context**: Choosing the complete technology stack for tick-task v1.0
 **Alternatives Considered**:
 - Django/Flask backend with Vue.js/Svelte frontend
 - Node.js/Express backend with React frontend

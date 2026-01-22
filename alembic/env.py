@@ -5,7 +5,7 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from fin_tasks.models import Base
+from tick_task.models import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

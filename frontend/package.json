@@ -1,8 +1,8 @@
 {
-  "name": "fin-tasks-frontend",
+  "name": "tick-task-frontend",
   "version": "0.5.0",
   "type": "module",
-  "description": "Frontend for FIN-tasks - Local-first task management application",
+  "description": "Frontend for tick-task - Local-first task management application",
   "main": "src/main.tsx",
   "scripts": {
     "dev": "vite",

@@ -5,7 +5,7 @@ from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from fin_tasks.config import settings
+from tick_task.config import settings
 
 # Create async engine
 engine = create_async_engine(
@@ -33,7 +33,7 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
 async def create_tables() -> None:
     """Create all database tables."""
-    from fin_tasks.models import Base
+    from tick_task.models import Base
 
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
@@ -41,7 +41,7 @@ async def create_tables() -> None:
 
 async def drop_tables() -> None:
     """Drop all database tables."""
-    from fin_tasks.models import Base
+    from tick_task.models import Base
 
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)

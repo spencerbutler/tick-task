@@ -1,7 +1,7 @@
 # UX/UI Specification (v1.0)
 
 ## Design Philosophy
-FIN-tasks embraces a **keyboard-first, productivity-focused** design philosophy. The interface prioritizes speed and efficiency while maintaining visual clarity and professional aesthetics suitable for both personal and professional task management.
+tick-task embraces a **keyboard-first, productivity-focused** design philosophy. The interface prioritizes speed and efficiency while maintaining visual clarity and professional aesthetics suitable for both personal and professional task management.
 
 ## Core Design Principles
 - **Minimalism**: Clean, uncluttered interface focused on content
