@@ -1,0 +1,118 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build setuptools-scm
+
+    - name: Install frontend dependencies
+      working-directory: frontend
+      run: npm ci
+
+    - name: Run tests
+      run: |
+        pip install -e .[dev]
+        python -m pytest --cov=tick_task --cov-report=term-missing
+
+    - name: Build frontend
+      working-directory: frontend
+      run: npm run build
+
+    - name: Build Python package
+      run: python -m build
+
+    - name: Generate changelog
+      id: changelog
+      run: |
+        # Install git-cliff for changelog generation
+        curl -L https://github.com/orhun/git-cliff/releases/latest/download/git-cliff-linux-x86_64.tar.gz | tar xz
+        chmod +x git-cliff
+        ./git-cliff --latest --strip header > CHANGELOG_LATEST.md
+        {
+          echo 'CHANGELOG<<EOF'
+          cat CHANGELOG_LATEST.md
+          echo EOF
+        } >> "$GITHUB_OUTPUT"
+
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref_name }}
+        release_name: Release ${{ github.ref_name }}
+        body: |
+          ## What's Changed
+
+          ${{ steps.changelog.outputs.CHANGELOG }}
+
+          ## Installation
+
+          ### From PyPI
+          ```bash
+          pip install tick-task
+          ```
+
+          ### From Source
+          ```bash
+          git clone https://github.com/spencerbutler/tick-task.git
+          cd tick-task
+          pip install -e .
+          ```
+
+        draft: false
+        prerelease: ${{ contains(github.ref_name, 'rc') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') }}
+
+    - name: Publish to PyPI
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
+
+    - name: Publish frontend package
+      if: startsWith(github.ref, 'refs/tags/v')
+      working-directory: frontend
+      run: |
+        npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
+        npm publish --access public
+      env:
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+    - name: Update CHANGELOG.md
+      run: |
+        ./git-cliff --latest --strip header >> CHANGELOG.md
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add CHANGELOG.md
+        git commit -m "docs: Update changelog for ${GITHUB_REF_NAME}" || echo "No changes to commit"

@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=65.0", "wheel"]
+requires = ["setuptools>=65.0", "wheel", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "fin-tasks"
-version = "0.4.0"
+name = "tick-task"
+dynamic = ["version"]
 description = "Local-first task management application"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -54,14 +54,20 @@ dev = [
 ]
 
 [project.scripts]
-fin-tasks = "fin_tasks.main:main"
-fin-tasks-dev = "dev:main"
+tick-task = "tick_task.main:main"
+tick-task-dev = "dev:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-fin_tasks = ["py.typed"]
+tick_task = ["py.typed"]
+
+# setuptools-scm configuration for automatic versioning
+[tool.setuptools_scm]
+write_to = "src/tick_task/_version.py"
+version_scheme = "post-release"
+local_scheme = "dirty-tag"
 
 # Black code formatting
 [tool.black]
@@ -87,7 +93,7 @@ extend-exclude = '''
 profile = "black"
 multi_line_output = 3
 line_length = 88
-known_first_party = ["fin_tasks"]
+known_first_party = ["tick_task"]
 skip = ["__init__.py"]
 
 # mypy type checking
@@ -120,7 +126,7 @@ python_functions = ["test_*"]
 addopts = [
     "--strict-markers",
     "--strict-config",
-    "--cov=fin_tasks",
+    "--cov=tick_task",
     "--cov-report=term-missing",
     "--cov-report=html:htmlcov",
     "--cov-fail-under=80",
@@ -133,7 +139,7 @@ markers = [
 
 # Coverage configuration
 [tool.coverage.run]
-source = ["fin_tasks"]
+source = ["tick_task"]
 omit = [
     "*/tests/*",
     "*/test_*.py",
