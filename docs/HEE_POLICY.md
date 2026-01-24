@@ -6,10 +6,4 @@ Vendored policy lives at:
 - prompts/hee/
 - prompts/hee/docs/
 
-Suggested practice:
-- Keep changes to vendored policy upstream in the human-execution-engine repo.
-- Re-vendor into this repo when upstream policy changes.
-
-Repo-local additions can live at:
-- docs/local/
-- prompts/local/
+Changes to policy should be made upstream and re-vendored.
